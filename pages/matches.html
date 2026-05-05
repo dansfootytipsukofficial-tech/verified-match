@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Details - Verified Match</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .match-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .match-hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3rem 2rem; border-radius: 12px; margin-bottom: 2rem; }
+        .match-header { display: flex; gap: 2rem; align-items: flex-start; }
+        .match-photo { width: 200px; height: 300px; border-radius: 12px; background: rgba(255,255,255,0.2); flex-shrink: 0; }
+        .match-info h1 { margin: 0 0 0.5rem 0; font-size: 2.5rem; }
+        .match-score { font-size: 3rem; font-weight: bold; margin: 1rem 0; }
+        .score-label { opacity: 0.9; font-size: 1rem; margin-bottom: 1rem; }
+        .compatibility-section { background: white; padding: 2rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .compatibility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 2rem; }
+        .compat-item { text-align: center; }
+        .compat-value { font-size: 2.5rem; font-weight: bold; color: #667eea; }
+        .compat-label { color: #666; margin-top: 0.5rem; }
+        .traits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .trait-box { background: #f5f5f5; padding: 1.5rem; border-radius: 8px; }
+        .trait-title { font-weight: 600; color: #333; margin-bottom: 0.5rem; }
+        .trait-value { color: #667eea; font-size: 1.1rem; }
+        .action-buttons { display: flex; gap: 1rem; margin-top: 2rem; }
+        .btn { padding: 1rem 2rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-secondary { background: #f0f0f0; color: #333; }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .btn-danger { background: #ef4444; color: white; }
+        .section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: #333; }
+        .interests-list { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .interest-tag { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; }
+        .timeline { margin-top: 2rem; }
+        .timeline-item { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; padding: 1rem; background: #f9f9f9; border-radius: 6px; }
+        .timeline-date { flex-shrink: 0; color: #667eea; font-weight: 600; min-width: 100px; }
+        .timeline-content { flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="match-container">
+        <div class="match-hero">
+            <div class="match-header">
+                <div class="match-photo"></div>
+                <div class="match-info">
+                    <h1>Sarah Anderson</h1>
+                    <p style="font-size: 1.1rem; opacity: 0.95;">28 • London • Software Designer</p>
+                    <div class="match-score">94%</div>
+                    <div class="score-label">Compatibility Match Score</div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">Send Message</button>
+                        <button class="btn btn-secondary">View Profile</button>
+                        <button class="btn btn-danger">Unlike</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="compatibility-section">
+            <h2 class="section-title">Compatibility Breakdown</h2>
+            <div class="compatibility-grid">
+                <div class="compat-item">
+                    <div class="compat-value">98%</div>
+                    <div class="compat-label">Interest Match</div>
+                </div>
+                <div class="compat-item">
+                    <div class="compat-value">92%</div>
+                    <div class="compat-label">Values Alignment</div>
+                </div>
+                <div class="compat-item">
+                    <div class="compat-value">89%</div>
+                    <div class="compat-label">Lifestyle Fit</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="compatibility-section">
+            <h2 class="section-title">Key Attributes</h2>
+            <div class="traits">
+                <div class="trait-box">
+                    <div class="trait-title">Common Interests</div>
+                    <div class="trait-value">15 shared interests</div>
+                    <div class="interests-list" style="margin-top: 0.75rem;">
+                        <span class="interest-tag">Travel</span>
+                        <span class="interest-tag">Music</span>
+                        <span class="interest-tag">Cooking</span>
+                        <span class="interest-tag">Fitness</span>
+                    </div>
+                </div>
+                <div class="trait-box">
+                    <div class="trait-title">Profile Completeness</div>
+                    <div class="trait-value">100%</div>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">Full profile with verified photos</p>
+                </div>
+                <div class="trait-box">
+                    <div class="trait-title">Activity Level</div>
+                    <div class="trait-value">Active Now</div>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">Last active 2 minutes ago</p>
+                </div>
+                <div class="trait-box">
+                    <div class="trait-title">Verification Status</div>
+                    <div class="trait-value" style="color: #10b981;">✓ Verified</div>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">Identity & photos verified</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="compatibility-section">
+            <h2 class="section-title">Interaction History</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Today</div>
+                    <div class="timeline-content">
+                        <strong>You matched!</strong>
+                        <p style="color: #666; margin-top: 0.25rem;">Sarah liked your profile and you matched back.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">14:30</div>
+                    <div class="timeline-content">
+                        <strong>Profile viewed</strong>
+                        <p style="color: #666; margin-top: 0.25rem;">Sarah viewed your profile</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="compatibility-section">
+            <h2 class="section-title">Next Steps</h2>
+            <p style="color: #666; margin-bottom: 1rem;">You have a strong compatibility match. Start a conversation to get to know Sarah better!</p>
+            <button class="btn btn-primary" style="width: 100%; padding: 1.5rem;">Start Conversation</button>
+        </div>
+    </div>
+    <script src="../js/api.js"></script>
+</body>
+</html>
