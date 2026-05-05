@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Verified Match</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 0; margin-bottom: 30px; border-radius: 8px; }
+        header h1 { font-size: 28px; margin-bottom: 10px; }
+        .nav-bar { display: flex; gap: 20px; margin-top: 20px; }
+        .nav-bar a { color: white; text-decoration: none; padding: 10px 15px; border-radius: 5px; background: rgba(255,255,255,0.2); transition: all 0.3s; }
+        .nav-bar a:hover { background: rgba(255,255,255,0.3); }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .card h3 { font-size: 14px; color: #999; margin-bottom: 10px; text-transform: uppercase; }
+        .card .number { font-size: 32px; font-weight: bold; color: #667eea; margin-bottom: 10px; }
+        .card p { font-size: 12px; color: #999; }
+        .card.highlight { border-left: 4px solid #667eea; }
+        .profile-section { background: white; border-radius: 8px; padding: 30px; margin-bottom: 20px; }
+        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .profile-info h2 { font-size: 24px; margin-bottom: 5px; }
+        .verified-badge { display: inline-block; background: #4caf50; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-top: 5px; }
+        .quality-score { background: #f0f0f0; padding: 15px; border-radius: 5px; text-align: center; }
+        .quality-score .score { font-size: 36px; font-weight: bold; color: #667eea; }
+        .quality-score p { font-size: 12px; color: #999; margin-top: 5px; }
+        .section-title { font-size: 20px; font-weight: bold; margin: 30px 0 15px 0; }
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .action-btn { background: #667eea; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        .action-btn:hover { background: #764ba2; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+        .recommendations { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .recommendation-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s; }
+        .recommendation-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.15); }
+        .rec-image { background: #e0e0e0; height: 200px; display: flex; align-items: center; justify-content: center; color: #999; }
+        .rec-info { padding: 15px; }
+        .rec-name { font-weight: bold; margin-bottom: 5px; }
+        .rec-details { font-size: 12px; color: #999; }
+        .like-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; transition: all 0.3s; }
+        .like-btn:hover { background: #c0392b; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>♥ Verified Match</h1>
+            <p>Find your perfect match</p>
+            <div class="nav-bar">
+                <a href="#">Browse</a>
+                <a href="#">Messages</a>
+                <a href="#">Matches</a>
+                <a href="#">Profile</a>
+                <a href="#">Settings</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="dashboard-grid">
+            <div class="card highlight">
+                <h3>Profile Views</h3>
+                <div class="number">247</div>
+                <p>↑ 12% from last week</p>
+            </div>
+            <div class="card highlight">
+                <h3>New Likes</h3>
+                <div class="number">18</div>
+                <p>↑ 5 new today</p>
+            </div>
+            <div class="card highlight">
+                <h3>Matches</h3>
+                <div class="number">9</div>
+                <p>2 new conversations</p>
+            </div>
+            <div class="card highlight">
+                <h3>Messages</h3>
+                <div class="number">24</div>
+                <p>3 unread messages</p>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <h2>Alex Johnson</h2>
+                    <div>28, London</div>
+                    <div class="verified-badge">✓ Verified</div>
+                </div>
+                <div class="quality-score">
+                    <div class="score">92</div>
+                    <p>Profile Quality Score</p>
+                </div>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <button class="action-btn" style="margin-right: 10px;">Edit Profile</button>
+                <button class="action-btn" style="margin-right: 10px;">View Profile</button>
+                <button class="action-btn">Upgrade to Premium</button>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <h2 class="section-title">Recommended Matches</h2>
+        <div class="recommendations">
+            <div class="recommendation-card">
+                <div class="rec-image">Photo</div>
+                <div class="rec-info">
+                    <div class="rec-name">Emma Smith</div>
+                    <div class="rec-details">26, Manchester</div>
+                    <div class="rec-details" style="margin-top: 5px;">Interests: Travel, Coffee, Reading</div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="like-btn" style="flex: 1;">Like</button>
+                        <button class="like-btn" style="flex: 1; background: #95a5a6;">Pass</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <div class="rec-image">Photo</div>
+                <div class="rec-info">
+                    <div class="rec-name">Sophie Brown</div>
+                    <div class="rec-details">25, London</div>
+                    <div class="rec-details" style="margin-top: 5px;">Interests: Yoga, Art, Cooking</div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="like-btn" style="flex: 1;">Like</button>
+                        <button class="like-btn" style="flex: 1; background: #95a5a6;">Pass</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <div class="rec-image">Photo</div>
+                <div class="rec-info">
+                    <div class="rec-name">Jessica Williams</div>
+                    <div class="rec-details">27, Edinburgh</div>
+                    <div class="rec-details" style="margin-top: 5px;">Interests: Hiking, Music, Wine</div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="like-btn" style="flex: 1;">Like</button>
+                        <button class="like-btn" style="flex: 1; background: #95a5a6;">Pass</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/analytics.js"></script>
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard loaded');
+            // Track page view
+            AnalyticsSystem.trackEvent('user123', 'page_view', { page: 'dashboard' });
+        });
+    </script>
+</body>
+</html>
