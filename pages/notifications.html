@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Verified Match</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .notifications-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .notifications-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .filter-btn:hover {
+            border-color: #667eea;
+        }
+        .notification-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+            display: flex;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .notification-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .notification-item.unread {
+            background: #f8f9ff;
+            border-left-color: #667eea;
+        }
+        .notification-item.read {
+            opacity: 0.7;
+        }
+        .notification-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .notification-content {
+            flex: 1;
+        }
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        .notification-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+        .notification-time {
+            color: #999;
+            font-size: 0.85rem;
+        }
+        .notification-message {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        .notification-actions {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+        .action-btn {
+            padding: 0.4rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .notification-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .notification-badge.match {
+            background: #10b981;
+        }
+        .notification-badge.message {
+            background: #f59e0b;
+        }
+        .notification-badge.like {
+            background: #ef4444;
+        }
+        .notification-badge.visit {
+            background: #3b82f6;
+        }
+        .notification-badge.system {
+            background: #8b5cf6;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+        }
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .preference-toggle {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 6px;
+        }
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #ccc;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .toggle-switch.active {
+            background: #667eea;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s ease;
+        }
+        .toggle-switch.active::after {
+            left: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="notifications-container">
+        <div class="notifications-header">
+            <div>
+                <h1>Notifications</h1>
+                <p style="color: #666; margin: 0.5rem 0 0 0;">Stay updated on matches, messages, and activity</p>
+            </div>
+            <div class="notifications-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="matches">Matches</button>
+                <button class="filter-btn" data-filter="messages">Messages</button>
+                <button class="filter-btn" data-filter="likes">Likes</button>
+                <button class="filter-btn" data-filter="unread">Unread</button>
+            </div>
+        </div>
+
+        <!-- Notification Items -->
+        <div class="notification-item unread" data-type="match">
+            <div class="notification-avatar">SA</div>
+            <div class="notification-content">
+                <div class="notification-header">
+                    <span class="notification-title">You have a new match!</span>
+                    <span class="notification-time">2 hours ago</span>
+                </div>
+                <div class="notification-message">
+                    You matched with Sarah Anderson, a 28-year-old from London interested in travel and technology.
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge match">Match</span>
+                    <button class="action-btn primary">View Profile</button>
+                    <button class="action-btn">Send Message</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification-item unread" data-type="message">
+            <div class="notification-avatar">EC</div>
+            <div class="notification-content">
+                <div class="notification-header">
+                    <span class="notification-title">New message from Emily Chen</span>
+                    <span class="notification-time">4 hours ago</span>
+                </div>
+                <div class="notification-message">
+                    "Hi! I noticed we have a lot in common. Would love to chat more!"
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge message">Message</span>
+                    <button class="action-btn primary">Reply</button>
+                    <button class="action-btn">Block</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification-item unread" data-type="like">
+            <div class="notification-avatar">JM</div>
+            <div class="notification-content">
+                <div class="notification-header">
+                    <span class="notification-title">Jessica Miller liked your profile</span>
+                    <span class="notification-time">6 hours ago</span>
+                </div>
+                <div class="notification-message">
+                    Jessica is a 26-year-old professional interested in fitness and cooking.
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge like">Like</span>
+                    <button class="action-btn primary">View Profile</button>
+                    <button class="action-btn">Like Back</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification-item read" data-type="visit">
+            <div class="notification-avatar">KL</div>
+            <div class="notification-content">
+                <div class="notification-header">
+                    <span class="notification-title">Kathryn Lee visited your profile</span>
+                    <span class="notification-time">12 hours ago</span>
+                </div>
+                <div class="notification-message">
+                    Kathryn checked out your profile and photos.
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge visit">Visit</span>
+                    <button class="action-btn primary">View Profile</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification-item read" data-type="system">
+            <div class="notification-avatar">VM</div>
+            <div class="notification-content">
+                <div class="notification-header">
+                    <span class="notification-title">Profile verification approved</span>
+                    <span class="notification-time">1 day ago</span>
+                </div>
+                <div class="notification-message">
+                    Congratulations! Your identity verification has been approved. Your profile now has the verified badge.
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge system">System</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification-item read" data-type="match">
+            <div class="notification-avatar">RW</div>
+            <div class="notification-content">
+                <div class="notification-header">
+                    <span class="notification-title">You matched with Rebecca Wilson</span>
+                    <span class="notification-time">2 days ago</span>
+                </div>
+                <div class="notification-message">
+                    Rebecca is a 29-year-old marketing manager who loves wine tasting and hiking.
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge match">Match</span>
+                    <button class="action-btn primary">View Profile</button>
+                    <button class="action-btn">Send Message</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Preferences Section -->
+        <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee;">
+            <h2>Notification Preferences</h2>
+            <div class="preference-toggle">
+                <div style="flex: 1;">
+                    <div style="font-weight: 500; color: #333;">New Matches</div>
+                    <div style="color: #999; font-size: 0.9rem;">Get notified when you have a new match</div>
+                </div>
+                <div class="toggle-switch active"></div>
+            </div>
+            <div class="preference-toggle">
+                <div style="flex: 1;">
+                    <div style="font-weight: 500; color: #333;">Messages</div>
+                    <div style="color: #999; font-size: 0.9rem;">Get notified when you receive new messages</div>
+                </div>
+                <div class="toggle-switch active"></div>
+            </div>
+            <div class="preference-toggle">
+                <div style="flex: 1;">
+                    <div style="font-weight: 500; color: #333;">Likes & Visits</div>
+                    <div style="color: #999; font-size: 0.9rem;">Get notified when someone likes or visits your profile</div>
+                </div>
+                <div class="toggle-switch active"></div>
+            </div>
+            <div class="preference-toggle">
+                <div style="flex: 1;">
+                    <div style="font-weight: 500; color: #333;">Email Notifications</div>
+                    <div style="color: #999; font-size: 0.9rem;">Receive email summaries of your activity</div>
+                </div>
+                <div class="toggle-switch"></div>
+            </div>
+            <div class="preference-toggle">
+                <div style="flex: 1;">
+                    <div style="font-weight: 500; color: #333;">Push Notifications</div>
+                    <div style="color: #999; font-size: 0.9rem;">Receive browser push notifications</div>
+                </div>
+                <div class="toggle-switch active"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const notificationItems = document.querySelectorAll('.notification-item');
+        const toggleSwitches = document.querySelectorAll('.toggle-switch');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.getAttribute('data-filter');
+                
+                notificationItems.forEach(item => {
+                    if (filter === 'all') {
+                        item.style.display = 'flex';
+                    } else if (filter === 'unread') {
+                        item.style.display = item.classList.contains('unread') ? 'flex' : 'none';
+                    } else {
+                        item.style.display = item.getAttribute('data-type') === filter ? 'flex' : 'none';
+                    }
+                });
+            });
+        });
+
+        toggleSwitches.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
