@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Verified Match</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .profile-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 2rem;
+            padding: 2rem;
+        }
+        .profile-sidebar {
+            flex: 0 0 300px;
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-name {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .profile-status {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .profile-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .profile-menu-item {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .profile-menu-item:hover {
+            background: #f5f5f5;
+            border-color: #667eea;
+        }
+        .profile-menu-item.active {
+            background: #667eea;
+            color: white;
+        }
+        .profile-content {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        .verification-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-sidebar">
+            <div class="profile-avatar">
+                <span id="avatarInitial">J</span>
+            </div>
+            <div class="profile-name">
+                John Smith
+                <span class="verification-badge">✓ Verified</span>
+            </div>
+            <div class="profile-status">Premium Member • Online</div>
+            <div class="profile-menu">
+                <div class="profile-menu-item active" data-section="overview">Profile Overview</div>
+                <div class="profile-menu-item" data-section="edit">Edit Profile</div>
+                <div class="profile-menu-item" data-section="photos">Photo Gallery</div>
+                <div class="profile-menu-item" data-section="preferences">Preferences</div>
+                <div class="profile-menu-item" data-section="security">Security Settings</div>
+                <div class="profile-menu-item" data-section="billing">Billing & Premium</div>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <!-- Overview Section -->
+            <div class="content-section active" id="overview">
+                <h2>Profile Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">487</div>
+                        <div class="stat-label">Profile Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">94</div>
+                        <div class="stat-label">Matches</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">23</div>
+                        <div class="stat-label">Conversations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.8/5</div>
+                        <div class="stat-label">Compatibility</div>
+                    </div>
+                </div>
+                <h3>About You</h3>
+                <p>Professional, ambitious, and looking for a meaningful connection. Enjoy hiking, wine tasting, and exploring new restaurants.</p>
+                <h3>Interests</h3>
+                <p>Travel, Technology, Fitness, Cooking, Art, Music</p>
+            </div>
+
+            <!-- Edit Profile Section -->
+            <div class="content-section" id="edit">
+                <h2>Edit Profile</h2>
+                <form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" value="John">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" value="Smith">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" value="john@example.com">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" value="1990-05-15">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" value="London, UK">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Profession</label>
+                            <input type="text" value="Software Engineer">
+                        </div>
+                        <div class="form-group">
+                            <label>Industry</label>
+                            <select>
+                                <option selected>Technology</option>
+                                <option>Finance</option>
+                                <option>Healthcare</option>
+                                <option>Education</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>About You</label>
+                        <textarea>Professional, ambitious, and looking for a meaningful connection. Enjoy hiking, wine tasting, and exploring new restaurants.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Interests (comma-separated)</label>
+                        <input type="text" value="Travel, Technology, Fitness, Cooking, Art, Music">
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Photos Section -->
+            <div class="content-section" id="photos">
+                <h2>Photo Gallery</h2>
+                <p style="margin-bottom: 1.5rem; color: #666;">Upload and manage your profile photos. Your primary photo will be shown on your profile.</p>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                    <div style="aspect-ratio: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; cursor: pointer;">+</div>
+                    <div style="aspect-ratio: 1; background: #f0f0f0; border-radius: 8px; border: 2px solid #667eea; display: flex; align-items: center; justify-content: center;">Primary Photo</div>
+                    <div style="aspect-ratio: 1; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">Photo 3</div>
+                </div>
+                <button class="btn btn-primary">Upload Photo</button>
+            </div>
+
+            <!-- Preferences Section -->
+            <div class="content-section" id="preferences">
+                <h2>Preferences</h2>
+                <div class="form-group">
+                    <label>Looking for:</label>
+                    <select>
+                        <option selected>Relationship</option>
+                        <option>Casual Dating</option>
+                        <option>Networking</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Age Range</label>
+                    <input type="range" min="18" max="70" value="30" style="width: 100%;">
+                    <span id="ageDisplay" style="margin-top: 0.5rem; display: block;">25 - 35</span>
+                </div>
+                <div class="form-group">
+                    <label>Location Radius (km)</label>
+                    <input type="number" value="50" min="1" max="500">
+                </div>
+                <div class="form-group">
+                    <label>Religion</label>
+                    <select>
+                        <option>Any</option>
+                        <option selected>Christian</option>
+                        <option>Muslim</option>
+                        <option>Jewish</option>
+                        <option>Hindu</option>
+                        <option>Buddhist</option>
+                        <option>Agnostic</option>
+                        <option>Atheist</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Smoking Status</label>
+                    <select>
+                        <option selected>Non-smoker</option>
+                        <option>Smoker</option>
+                        <option>Occasional</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary">Save Preferences</button>
+                </div>
+            </div>
+
+            <!-- Security Section -->
+            <div class="content-section" id="security">
+                <h2>Security Settings</h2>
+                <div class="success-box">
+                    ✓ Your account is secure. Two-factor authentication is enabled.
+                </div>
+                <h3>Change Password</h3>
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password">
+                </div>
+                <button class="btn btn-primary">Update Password</button>
+                <h3 style="margin-top: 2rem;">Two-Factor Authentication</h3>
+                <p style="color: #666; margin-bottom: 1rem;">Add an extra layer of security to your account.</p>
+                <button class="btn btn-secondary">Setup 2FA</button>
+                <h3 style="margin-top: 2rem;">Active Sessions</h3>
+                <p style="color: #666; margin-bottom: 1rem;">Manage your active login sessions.</p>
+                <div style="background: #f5f5f5; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                    <div><strong>Chrome on Mac</strong> - Last active: 5 minutes ago</div>
+                    <div style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">London, UK</div>
+                </div>
+                <button class="btn btn-secondary">Sign Out All Devices</button>
+            </div>
+
+            <!-- Billing Section -->
+            <div class="content-section" id="billing">
+                <h2>Billing & Premium</h2>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                    <h3 style="margin-top: 0; color: white;">Premium Membership</h3>
+                    <p style="margin-bottom: 1rem;">You're currently on our Premium Plan</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Next Billing Date</div>
+                            <div style="font-size: 1.5rem; font-weight: bold;">June 5, 2026</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Monthly Cost</div>
+                            <div style="font-size: 1.5rem; font-weight: bold;">£29.99</div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Billing History</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #ddd;">
+                            <th style="text-align: left; padding: 0.75rem 0;">Date</th>
+                            <th style="text-align: left; padding: 0.75rem 0;">Amount</th>
+                            <th style="text-align: left; padding: 0.75rem 0;">Status</th>
+                            <th style="text-align: left; padding: 0.75rem 0;">Invoice</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 0.75rem 0;">May 5, 2026</td>
+                            <td style="padding: 0.75rem 0;">£29.99</td>
+                            <td style="padding: 0.75rem 0;"><span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">Paid</span></td>
+                            <td style="padding: 0.75rem 0;"><a href="#" style="color: #667eea; text-decoration: none;">Download</a></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 0.75rem 0;">April 5, 2026</td>
+                            <td style="padding: 0.75rem 0;">£29.99</td>
+                            <td style="padding: 0.75rem 0;"><span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">Paid</span></td>
+                            <td style="padding: 0.75rem 0;"><a href="#" style="color: #667eea; text-decoration: none;">Download</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin-top: 2rem;">
+                    <button class="btn btn-secondary">Cancel Subscription</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        const menuItems = document.querySelectorAll('.profile-menu-item');
+        const sections = document.querySelectorAll('.content-section');
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionId = item.getAttribute('data-section');
+                menuItems.forEach(m => m.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
