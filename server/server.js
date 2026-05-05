@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
+const db = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -97,6 +98,19 @@ app.post('/api/matches/like', (req, res) => {
 app.post('/api/matches/pass', (req, res) => {
   res.json({ message: 'Pass match - Coming soon' });
 });
+
+// Import Route Handlers
+const authRoutes = require('./routes/auth');
+const matchRoutes = require('./routes/matches');
+const messageRoutes = require('./routes/messages');
+const profileRoutes = require('./routes/profiles');
+
+// Route Middleware
+app.use('/api/auth', authRoutes);
+app.use('/api/matches', matchRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/profiles', profileRoutes);
+
 
 // Error Handlers
 app.use((req, res) => {
