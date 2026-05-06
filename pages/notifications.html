@@ -1,390 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifications - Verified Match</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .notifications-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .notifications-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .notifications-filters {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-        .filter-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-        .filter-btn:hover {
-            border-color: #667eea;
-        }
-        .notification-item {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid #667eea;
-            display: flex;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .notification-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-        .notification-item.unread {
-            background: #f8f9ff;
-            border-left-color: #667eea;
-        }
-        .notification-item.read {
-            opacity: 0.7;
-        }
-        .notification-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-        .notification-content {
-            flex: 1;
-        }
-        .notification-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.5rem;
-        }
-        .notification-title {
-            font-weight: 600;
-            color: #333;
-            font-size: 1rem;
-        }
-        .notification-time {
-            color: #999;
-            font-size: 0.85rem;
-        }
-        .notification-message {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 0.75rem;
-            line-height: 1.4;
-        }
-        .notification-actions {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.9rem;
-        }
-        .action-btn {
-            padding: 0.4rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-            color: #667eea;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .action-btn:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-        .action-btn.primary {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-        .notification-badge {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        .notification-badge.match {
-            background: #10b981;
-        }
-        .notification-badge.message {
-            background: #f59e0b;
-        }
-        .notification-badge.like {
-            background: #ef4444;
-        }
-        .notification-badge.visit {
-            background: #3b82f6;
-        }
-        .notification-badge.system {
-            background: #8b5cf6;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #999;
-        }
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .preference-toggle {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: #f5f5f5;
-            border-radius: 6px;
-        }
-        .toggle-switch {
-            width: 50px;
-            height: 28px;
-            background: #ccc;
-            border-radius: 14px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .toggle-switch.active {
-            background: #667eea;
-        }
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: left 0.3s ease;
-        }
-        .toggle-switch.active::after {
-            left: 24px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications - Verified Match</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, sans-serif; background: #f5f5f5; min-height: 100vh; }
+.topbar { background: #667eea; color: white; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+.topbar .logo { font-size: 20px; font-weight: 700; }
+.topbar nav a { color: rgba(255,255,255,0.85); text-decoration: none; margin-left: 16px; font-size: 14px; }
+.topbar nav a.active { color: white; font-weight: 600; }
+.logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 13px; }
+.page { max-width: 700px; margin: 0 auto; padding: 30px 20px; }
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.page-header h1 { font-size: 24px; color: #333; }
+.clear-btn { background: none; border: 2px solid #e0e0e0; color: #888; padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; }
+.clear-btn:hover { border-color: #ff4757; color: #ff4757; }
+.tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+.tab { padding: 7px 18px; border-radius: 20px; border: 2px solid #e0e0e0; background: white; font-size: 13px; cursor: pointer; color: #666; font-weight: 500; transition: all 0.2s; }
+.tab.active { background: #667eea; color: white; border-color: #667eea; }
+.notif-list { display: flex; flex-direction: column; gap: 10px; }
+.notif-item { background: white; border-radius: 14px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.2s; border-left: 4px solid transparent; }
+.notif-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateX(2px); }
+.notif-item.unread { border-left-color: #667eea; background: #f8f9ff; }
+.notif-item.unread .notif-title { font-weight: 700; }
+.notif-icon { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.notif-icon.match { background: #fce4ec; }
+.notif-icon.like { background: #fce4ec; }
+.notif-icon.msg { background: #e8eaf6; }
+.notif-icon.visit { background: #e8f5e9; }
+.notif-icon.system { background: #fff8e1; }
+.notif-body { flex: 1; min-width: 0; }
+.notif-title { font-size: 14px; color: #333; margin-bottom: 3px; }
+.notif-desc { font-size: 13px; color: #888; line-height: 1.4; }
+.notif-time { font-size: 11px; color: #bbb; margin-top: 5px; }
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #667eea; flex-shrink: 0; margin-top: 6px; }
+.notif-dot.read { background: transparent; }
+.empty { text-align: center; padding: 60px 20px; color: #aaa; }
+.empty .icon { font-size: 56px; margin-bottom: 14px; }
+.unread-count { background: #667eea; color: white; border-radius: 10px; padding: 2px 8px; font-size: 12px; margin-left: 8px; }
+</style>
 </head>
 <body>
-    <div class="notifications-container">
-        <div class="notifications-header">
-            <div>
-                <h1>Notifications</h1>
-                <p style="color: #666; margin: 0.5rem 0 0 0;">Stay updated on matches, messages, and activity</p>
-            </div>
-            <div class="notifications-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="matches">Matches</button>
-                <button class="filter-btn" data-filter="messages">Messages</button>
-                <button class="filter-btn" data-filter="likes">Likes</button>
-                <button class="filter-btn" data-filter="unread">Unread</button>
-            </div>
-        </div>
+<div class="topbar">
+  <div class="logo">💜 Verified Match</div>
+  <nav>
+    <a href="./dashboard.html">Home</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./matches.html">Matches</a>
+    <a href="./messages.html">Messages</a>
+    <a href="./notifications.html" class="active">Alerts</a>
+    <a href="./profile.html">Profile</a>
+  </nav>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+<div class="page">
+  <div class="page-header">
+    <h1>🔔 Notifications <span class="unread-count" id="unreadCount">0</span></h1>
+    <button class="clear-btn" onclick="markAllRead()">Mark all as read</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('all',this)">All</button>
+    <button class="tab" onclick="showTab('match',this)">Matches</button>
+    <button class="tab" onclick="showTab('msg',this)">Messages</button>
+    <button class="tab" onclick="showTab('like',this)">Likes</button>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+</div>
+<script>
+const session = JSON.parse(localStorage.getItem('vm_session')||'null');
+if(!session){window.location.href='./login.html';}
 
-        <!-- Notification Items -->
-        <div class="notification-item unread" data-type="match">
-            <div class="notification-avatar">SA</div>
-            <div class="notification-content">
-                <div class="notification-header">
-                    <span class="notification-title">You have a new match!</span>
-                    <span class="notification-time">2 hours ago</span>
-                </div>
-                <div class="notification-message">
-                    You matched with Sarah Anderson, a 28-year-old from London interested in travel and technology.
-                </div>
-                <div class="notification-actions">
-                    <span class="notification-badge match">Match</span>
-                    <button class="action-btn primary">View Profile</button>
-                    <button class="action-btn">Send Message</button>
-                </div>
-            </div>
-        </div>
+let notifs = JSON.parse(localStorage.getItem('vm_notifs')||'null') || [
+  {id:1,type:'match',icon:'💘',title:'New Match!',desc:'You and Sophie Brown matched! Say hello.',time:'2 minutes ago',unread:true,link:'./messages.html'},
+  {id:2,type:'msg',icon:'💬',title:'New message from Emma',desc:'"Haha yes! I love hiking too"',time:'15 minutes ago',unread:true,link:'./messages.html'},
+  {id:3,type:'like',icon:'❤️',title:'Charlotte liked your profile',desc:'Charlotte Davis thinks you two would get along!',time:'1 hour ago',unread:true,link:'./matches.html'},
+  {id:4,type:'match',icon:'💘',title:'New Match!',desc:'You and Olivia Brown matched!',time:'3 hours ago',unread:false,link:'./messages.html'},
+  {id:5,type:'visit',icon:'👀',title:'Someone visited your profile',desc:'A Premium member checked out your profile.',time:'4 hours ago',unread:false,link:'./profile.html'},
+  {id:6,type:'like',icon:'❤️',title:'Jessica liked your profile',desc:'Jessica Williams swiped right on you!',time:'Yesterday',unread:false,link:'./matches.html'},
+  {id:7,type:'msg',icon:'💬',title:'New message from Olivia',desc:'"Thanks for the recommendation!"',time:'Yesterday',unread:false,link:'./messages.html'},
+  {id:8,type:'system',icon:'⭐',title:'Your profile is trending!',desc:'You are in the top 10% most viewed profiles this week.',time:'2 days ago',unread:false,link:'./profile.html'},
+  {id:9,type:'like',icon:'❤️',title:'5 people liked your profile today',desc:'You are popular! Check your matches.',time:'2 days ago',unread:false,link:'./matches.html'},
+  {id:10,type:'system',icon:'🛡️',title:'Verification complete',desc:'Your profile is now verified. You will get more matches!',time:'3 days ago',unread:false,link:'./profile.html'}
+];
 
-        <div class="notification-item unread" data-type="message">
-            <div class="notification-avatar">EC</div>
-            <div class="notification-content">
-                <div class="notification-header">
-                    <span class="notification-title">New message from Emily Chen</span>
-                    <span class="notification-time">4 hours ago</span>
-                </div>
-                <div class="notification-message">
-                    "Hi! I noticed we have a lot in common. Would love to chat more!"
-                </div>
-                <div class="notification-actions">
-                    <span class="notification-badge message">Message</span>
-                    <button class="action-btn primary">Reply</button>
-                    <button class="action-btn">Block</button>
-                </div>
-            </div>
-        </div>
+let currentTab = 'all';
 
-        <div class="notification-item unread" data-type="like">
-            <div class="notification-avatar">JM</div>
-            <div class="notification-content">
-                <div class="notification-header">
-                    <span class="notification-title">Jessica Miller liked your profile</span>
-                    <span class="notification-time">6 hours ago</span>
-                </div>
-                <div class="notification-message">
-                    Jessica is a 26-year-old professional interested in fitness and cooking.
-                </div>
-                <div class="notification-actions">
-                    <span class="notification-badge like">Like</span>
-                    <button class="action-btn primary">View Profile</button>
-                    <button class="action-btn">Like Back</button>
-                </div>
-            </div>
-        </div>
+function updateCount(){
+  const n = notifs.filter(x=>x.unread).length;
+  document.getElementById('unreadCount').textContent = n;
+  document.getElementById('unreadCount').style.display = n>0?'inline':'none';
+}
 
-        <div class="notification-item read" data-type="visit">
-            <div class="notification-avatar">KL</div>
-            <div class="notification-content">
-                <div class="notification-header">
-                    <span class="notification-title">Kathryn Lee visited your profile</span>
-                    <span class="notification-time">12 hours ago</span>
-                </div>
-                <div class="notification-message">
-                    Kathryn checked out your profile and photos.
-                </div>
-                <div class="notification-actions">
-                    <span class="notification-badge visit">Visit</span>
-                    <button class="action-btn primary">View Profile</button>
-                </div>
-            </div>
-        </div>
+function showTab(tab, el){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderNotifs();
+}
 
-        <div class="notification-item read" data-type="system">
-            <div class="notification-avatar">VM</div>
-            <div class="notification-content">
-                <div class="notification-header">
-                    <span class="notification-title">Profile verification approved</span>
-                    <span class="notification-time">1 day ago</span>
-                </div>
-                <div class="notification-message">
-                    Congratulations! Your identity verification has been approved. Your profile now has the verified badge.
-                </div>
-                <div class="notification-actions">
-                    <span class="notification-badge system">System</span>
-                </div>
-            </div>
-        </div>
+function renderNotifs(){
+  const list = document.getElementById('notifList');
+  let filtered = notifs;
+  if(currentTab !== 'all') filtered = notifs.filter(n=>n.type===currentTab);
+  if(filtered.length===0){
+    list.innerHTML='<div class="empty"><div class="icon">🔔</div><h3>No notifications here</h3></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(n=>`
+    <div class="notif-item${n.unread?' unread':''}" onclick="openNotif(${n.id})">
+      <div class="notif-icon ${n.type}">${n.icon}</div>
+      <div class="notif-body">
+        <div class="notif-title">${n.title}</div>
+        <div class="notif-desc">${n.desc}</div>
+        <div class="notif-time">${n.time}</div>
+      </div>
+      <div class="notif-dot${n.unread?'':' read'}"></div>
+    </div>`).join('');
+}
 
-        <div class="notification-item read" data-type="match">
-            <div class="notification-avatar">RW</div>
-            <div class="notification-content">
-                <div class="notification-header">
-                    <span class="notification-title">You matched with Rebecca Wilson</span>
-                    <span class="notification-time">2 days ago</span>
-                </div>
-                <div class="notification-message">
-                    Rebecca is a 29-year-old marketing manager who loves wine tasting and hiking.
-                </div>
-                <div class="notification-actions">
-                    <span class="notification-badge match">Match</span>
-                    <button class="action-btn primary">View Profile</button>
-                    <button class="action-btn">Send Message</button>
-                </div>
-            </div>
-        </div>
+function openNotif(id){
+  const n = notifs.find(x=>x.id===id);
+  if(n){ n.unread=false; save(); updateCount(); renderNotifs(); window.location.href=n.link; }
+}
 
-        <!-- Notification Preferences Section -->
-        <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee;">
-            <h2>Notification Preferences</h2>
-            <div class="preference-toggle">
-                <div style="flex: 1;">
-                    <div style="font-weight: 500; color: #333;">New Matches</div>
-                    <div style="color: #999; font-size: 0.9rem;">Get notified when you have a new match</div>
-                </div>
-                <div class="toggle-switch active"></div>
-            </div>
-            <div class="preference-toggle">
-                <div style="flex: 1;">
-                    <div style="font-weight: 500; color: #333;">Messages</div>
-                    <div style="color: #999; font-size: 0.9rem;">Get notified when you receive new messages</div>
-                </div>
-                <div class="toggle-switch active"></div>
-            </div>
-            <div class="preference-toggle">
-                <div style="flex: 1;">
-                    <div style="font-weight: 500; color: #333;">Likes & Visits</div>
-                    <div style="color: #999; font-size: 0.9rem;">Get notified when someone likes or visits your profile</div>
-                </div>
-                <div class="toggle-switch active"></div>
-            </div>
-            <div class="preference-toggle">
-                <div style="flex: 1;">
-                    <div style="font-weight: 500; color: #333;">Email Notifications</div>
-                    <div style="color: #999; font-size: 0.9rem;">Receive email summaries of your activity</div>
-                </div>
-                <div class="toggle-switch"></div>
-            </div>
-            <div class="preference-toggle">
-                <div style="flex: 1;">
-                    <div style="font-weight: 500; color: #333;">Push Notifications</div>
-                    <div style="color: #999; font-size: 0.9rem;">Receive browser push notifications</div>
-                </div>
-                <div class="toggle-switch active"></div>
-            </div>
-        </div>
-    </div>
+function markAllRead(){
+  notifs.forEach(n=>n.unread=false);
+  save(); updateCount(); renderNotifs();
+}
 
-    <script src="../js/api.js"></script>
-    <script>
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const notificationItems = document.querySelectorAll('.notification-item');
-        const toggleSwitches = document.querySelectorAll('.toggle-switch');
+function save(){ localStorage.setItem('vm_notifs',JSON.stringify(notifs)); }
 
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const filter = btn.getAttribute('data-filter');
-                
-                notificationItems.forEach(item => {
-                    if (filter === 'all') {
-                        item.style.display = 'flex';
-                    } else if (filter === 'unread') {
-                        item.style.display = item.classList.contains('unread') ? 'flex' : 'none';
-                    } else {
-                        item.style.display = item.getAttribute('data-type') === filter ? 'flex' : 'none';
-                    }
-                });
-            });
-        });
+function logout(){
+  localStorage.removeItem('vm_session');
+  localStorage.removeItem('vm_current_user');
+  window.location.href='./login.html';
+}
 
-        toggleSwitches.forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                toggle.classList.toggle('active');
-            });
-        });
-    </script>
+updateCount();
+renderNotifs();
+</script>
 </body>
 </html>
