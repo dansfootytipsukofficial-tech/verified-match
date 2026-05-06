@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Verified Match</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .register-container { width: 100%; max-width: 480px; }
+    .register-header { text-align: center; color: white; margin-bottom: 30px; }
+    .logo { font-size: 3rem; margin-bottom: 10px; }
+    .logo-text { font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; }
+    .tagline { font-size: 0.95rem; opacity: 0.85; }
+    .register-card { background: white; border-radius: 16px; padding: 36px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .register-card h2 { font-size: 1.4rem; color: #333; margin-bottom: 6px; }
+    .register-card p { font-size: 0.9rem; color: #888; margin-bottom: 24px; }
+    .step-indicator { display: flex; gap: 8px; margin-bottom: 28px; }
+    .step { flex: 1; height: 4px; border-radius: 2px; background: #e5e7eb; transition: background 0.3s; }
+    .step.active { background: #667eea; }
+    .step.done { background: #10b981; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #444; margin-bottom: 6px; }
+    .form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem; color: #333; transition: border-color 0.2s; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+    .form-group input.error { border-color: #ef4444; }
+    .error-msg { font-size: 0.8rem; color: #ef4444; margin-top: 4px; display: none; }
+    .error-msg.show { display: block; }
+    .interests-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .interest-tag { padding: 6px 14px; border-radius: 20px; border: 1.5px solid #e5e7eb; font-size: 0.82rem; cursor: pointer; color: #555; transition: all 0.2s; user-select: none; }
+    .interest-tag.selected { background: #667eea; color: white; border-color: #667eea; }
+    .btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-secondary { background: #f3f4f6; color: #555; margin-top: 10px; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .step-section { display: none; }
+    .step-section.active { display: block; }
+    .success-section { display: none; text-align: center; padding: 20px 0; }
+    .success-icon { font-size: 4rem; margin-bottom: 16px; }
+    .success-section h2 { color: #333; margin-bottom: 8px; }
+    .success-section p { color: #888; margin-bottom: 24px; }
+    .password-strength { height: 4px; border-radius: 2px; margin-top: 6px; transition: all 0.3s; background: #e5e7eb; }
+    .strength-weak { background: #ef4444; width: 33%; }
+    .strength-medium { background: #f59e0b; width: 66%; }
+    .strength-strong { background: #10b981; width: 100%; }
+    .strength-label { font-size: 0.75rem; color: #888; margin-top: 4px; }
+    .terms { font-size: 0.82rem; color: #777; text-align: center; margin-top: 16px; }
+    .terms a { color: #667eea; text-decoration: none; }
+    .login-link { text-align: center; margin-top: 20px; font-size: 0.9rem; color: #777; }
+    .login-link a { color: #667eea; text-decoration: none; font-weight: 600; }
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.88rem; display: none; }
+    .alert.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; display: block; }
+    .alert.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; display: block; }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <div class="register-header">
+      <div class="logo">💕</div>
+      <div class="logo-text">Verified Match</div>
+      <div class="tagline">Join thousands of UK singles finding meaningful connections</div>
+    </div>
+    <div class="register-card">
+      <div id="alertBox" class="alert"></div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step active" id="stepBar1"></div>
+        <div class="step" id="stepBar2"></div>
+        <div class="step" id="stepBar3"></div>
+      </div>
+
+      <!-- Step 1: Basic Info -->
+      <div class="step-section active" id="step1">
+        <h2>Create your account</h2>
+        <p>Step 1 of 3 — Basic information</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="firstName" placeholder="e.g. Emma" />
+            <div class="error-msg" id="firstNameErr">Please enter your first name</div>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="lastName" placeholder="e.g. Smith" />
+            <div class="error-msg" id="lastNameErr">Please enter your last name</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="your@email.com" />
+          <div class="error-msg" id="emailErr">Please enter a valid email</div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="At least 8 characters" oninput="checkStrength(this.value)" />
+          <div class="password-strength" id="strengthBar"></div>
+          <div class="strength-label" id="strengthLabel"></div>
+          <div class="error-msg" id="passwordErr">Password must be at least 8 characters</div>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="confirmPassword" placeholder="Repeat your password" />
+          <div class="error-msg" id="confirmErr">Passwords do not match</div>
+        </div>
+        <button class="btn btn-primary" onclick="nextStep(1)">Continue &rarr;</button>
+        <div class="login-link">Already have an account? <a href="./login.html">Sign in</a></div>
+      </div>
+
+      <!-- Step 2: Profile Details -->
+      <div class="step-section" id="step2">
+        <h2>Tell us about yourself</h2>
+        <p>Step 2 of 3 — Profile details</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" id="age" placeholder="e.g. 27" min="18" max="99" />
+            <div class="error-msg" id="ageErr">Must be 18 or over</div>
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <select id="gender">
+              <option value="">Select...</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other / Non-binary</option>
+            </select>
+            <div class="error-msg" id="genderErr">Please select your gender</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Location (UK City)</label>
+          <input type="text" id="location" placeholder="e.g. London" />
+          <div class="error-msg" id="locationErr">Please enter your location</div>
+        </div>
+        <div class="form-group">
+          <label>Looking for</label>
+          <select id="lookingFor">
+            <option value="">Select...</option>
+            <option value="relationship">Serious Relationship</option>
+            <option value="dating">Casual Dating</option>
+            <option value="friendship">Friendship First</option>
+            <option value="open">Open to Anything</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Short Bio</label>
+          <input type="text" id="bio" placeholder="Tell potential matches a bit about you..." />
+        </div>
+        <button class="btn btn-primary" onclick="nextStep(2)">Continue &rarr;</button>
+        <button class="btn btn-secondary" onclick="prevStep(2)">&#8592; Back</button>
+      </div>
+
+      <!-- Step 3: Interests -->
+      <div class="step-section" id="step3">
+        <h2>Your interests</h2>
+        <p>Step 3 of 3 — Pick at least 3 interests to help find your best matches</p>
+        <div class="interests-grid" id="interestsGrid">
+          <span class="interest-tag" onclick="toggleInterest(this)">Travel ✈️</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Fitness 🏋️</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Cooking 🍳</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Music 🎵</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Art 🎨</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Cinema 🎬</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Hiking 🥾</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Reading 📚</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Gaming 🎮</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Yoga 🧘</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Dogs 🐶</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Coffee ☕</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Wine 🍷</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Technology 💻</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Foodie 🍜</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Sports ⚽</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Theatre 🎭</span>
+          <span class="interest-tag" onclick="toggleInterest(this)">Photography 📷</span>
+        </div>
+        <div class="error-msg" id="interestsErr" style="margin-top:10px;">Please select at least 3 interests</div>
+        <button class="btn btn-primary" style="margin-top:24px;" onclick="submitRegister()">Create My Account 💕</button>
+        <button class="btn btn-secondary" onclick="prevStep(3)">&#8592; Back</button>
+      </div>
+
+      <!-- Success Screen -->
+      <div class="success-section" id="successSection">
+        <div class="success-icon">🎉</div>
+        <h2>Welcome to Verified Match!</h2>
+        <p>Your account has been created. Let's find your perfect match!</p>
+        <button class="btn btn-primary" onclick="window.location.href='./dashboard.html'">Go to Dashboard &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let formData = {};
+
+    function showAlert(msg, type) {
+      const box = document.getElementById('alertBox');
+      box.textContent = msg;
+      box.className = 'alert ' + type;
+      setTimeout(() => { box.className = 'alert'; }, 4000);
+    }
+
+    function checkStrength(val) {
+      const bar = document.getElementById('strengthBar');
+      const label = document.getElementById('strengthLabel');
+      bar.className = 'password-strength';
+      if (!val) { label.textContent = ''; return; }
+      if (val.length < 6) { bar.classList.add('strength-weak'); label.textContent = 'Weak'; }
+      else if (val.length < 10 || !/[A-Z]/.test(val) || !/[0-9]/.test(val)) { bar.classList.add('strength-medium'); label.textContent = 'Medium'; }
+      else { bar.classList.add('strength-strong'); label.textContent = 'Strong 💪'; }
+    }
+
+    function toggleInterest(el) {
+      el.classList.toggle('selected');
+    }
+
+    function nextStep(current) {
+      if (current === 1) {
+        const fn = document.getElementById('firstName').value.trim();
+        const ln = document.getElementById('lastName').value.trim();
+        const em = document.getElementById('email').value.trim();
+        const pw = document.getElementById('password').value;
+        const cp = document.getElementById('confirmPassword').value;
+        let ok = true;
+        if (!fn) { document.getElementById('firstNameErr').classList.add('show'); ok=false; } else { document.getElementById('firstNameErr').classList.remove('show'); }
+        if (!ln) { document.getElementById('lastNameErr').classList.add('show'); ok=false; } else { document.getElementById('lastNameErr').classList.remove('show'); }
+        if (!em || !em.includes('@')) { document.getElementById('emailErr').classList.add('show'); ok=false; } else { document.getElementById('emailErr').classList.remove('show'); }
+        if (pw.length < 8) { document.getElementById('passwordErr').classList.add('show'); ok=false; } else { document.getElementById('passwordErr').classList.remove('show'); }
+        if (pw !== cp) { document.getElementById('confirmErr').classList.add('show'); ok=false; } else { document.getElementById('confirmErr').classList.remove('show'); }
+        if (!ok) return;
+        const users = JSON.parse(localStorage.getItem('vm_users') || '[]');
+        if (users.find(u => u.email === em)) { showAlert('An account with this email already exists.', 'error'); return; }
+        formData = { firstName: fn, lastName: ln, email: em, password: pw };
+      }
+      if (current === 2) {
+        const age = parseInt(document.getElementById('age').value);
+        const gender = document.getElementById('gender').value;
+        const loc = document.getElementById('location').value.trim();
+        let ok = true;
+        if (!age || age < 18) { document.getElementById('ageErr').classList.add('show'); ok=false; } else { document.getElementById('ageErr').classList.remove('show'); }
+        if (!gender) { document.getElementById('genderErr').classList.add('show'); ok=false; } else { document.getElementById('genderErr').classList.remove('show'); }
+        if (!loc) { document.getElementById('locationErr').classList.add('show'); ok=false; } else { document.getElementById('locationErr').classList.remove('show'); }
+        if (!ok) return;
+        formData.age = age;
+        formData.gender = gender;
+        formData.location = loc;
+        formData.lookingFor = document.getElementById('lookingFor').value;
+        formData.bio = document.getElementById('bio').value.trim();
+      }
+      document.getElementById('step' + current).classList.remove('active');
+      document.getElementById('step' + (current+1)).classList.add('active');
+      document.getElementById('stepBar' + current).classList.remove('active');
+      document.getElementById('stepBar' + current).classList.add('done');
+      document.getElementById('stepBar' + (current+1)).classList.add('active');
+    }
+
+    function prevStep(current) {
+      document.getElementById('step' + current).classList.remove('active');
+      document.getElementById('step' + (current-1)).classList.add('active');
+      document.getElementById('stepBar' + current).classList.remove('active');
+      document.getElementById('stepBar' + (current-1)).classList.remove('done');
+      document.getElementById('stepBar' + (current-1)).classList.add('active');
+    }
+
+    function submitRegister() {
+      const selected = document.querySelectorAll('.interest-tag.selected');
+      if (selected.length < 3) { document.getElementById('interestsErr').classList.add('show'); return; }
+      document.getElementById('interestsErr').classList.remove('show');
+      formData.interests = Array.from(selected).map(t => t.textContent.replace(/[^a-zA-Z ]/g, '').trim());
+      formData.id = 'user_' + Date.now();
+      formData.profilePhoto = null;
+      formData.verified = false;
+      formData.premium = false;
+      formData.profileViews = 0;
+      formData.likes = 0;
+      formData.matches = 0;
+      formData.messages = 0;
+      formData.createdAt = new Date().toISOString();
+      const users = JSON.parse(localStorage.getItem('vm_users') || '[]');
+      users.push(formData);
+      localStorage.setItem('vm_users', JSON.stringify(users));
+      localStorage.setItem('vm_current_user', JSON.stringify(formData));
+      localStorage.setItem('vm_session', JSON.stringify({ userId: formData.id, loggedIn: true, loginTime: Date.now() }));
+      document.getElementById('step3').classList.remove('active');
+      document.getElementById('stepBar3').classList.add('done');
+      document.getElementById('successSection').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
