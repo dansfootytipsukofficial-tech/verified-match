@@ -1,661 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - Verified Match</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .settings-container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
-
-        .settings-sidebar {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            height: fit-content;
-            border: 1px solid #e0e0e0;
-            position: sticky;
-            top: 20px;
-        }
-
-        .settings-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .settings-nav button {
-            padding: 12px 16px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s;
-        }
-
-        .settings-nav button:hover,
-        .settings-nav button.active {
-            background: #667eea;
-            color: white;
-            border-radius: 5px;
-            margin: 0 -16px;
-            padding: 12px 16px;
-        }
-
-        .settings-section {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            border: 1px solid #e0e0e0;
-            display: none;
-        }
-
-        .settings-section.active {
-            display: block;
-        }
-
-        .settings-section h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #667eea;
-            color: #333;
-        }
-
-        .settings-group {
-            margin-bottom: 30px;
-        }
-
-        .settings-group h3 {
-            margin-top: 0;
-            color: #333;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="password"],
-        .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .toggle-group {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .toggle-group label {
-            margin: 0;
-            flex: 1;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 50px;
-            height: 26px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: 0.4s;
-            border-radius: 26px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: #667eea;
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
-
-        .btn-danger {
-            background: #f44336;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #d32f2f;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .alert-info {
-            background: #e3f2fd;
-            color: #1565c0;
-            border-left: 4px solid #1565c0;
-        }
-
-        .alert-warning {
-            background: #fff3e0;
-            color: #e65100;
-            border-left: 4px solid #e65100;
-        }
-
-        .alert-danger {
-            background: #ffebee;
-            color: #c62828;
-            border-left: 4px solid #c62828;
-        }
-
-        .device-list {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .device-item {
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .device-item:last-child {
-            border-bottom: none;
-        }
-
-        .device-info h4 {
-            margin: 0 0 5px 0;
-            color: #333;
-        }
-
-        .device-info p {
-            margin: 0;
-            color: #999;
-            font-size: 13px;
-        }
-
-        .blocked-users {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .blocked-user {
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .blocked-user:last-child {
-            border-bottom: none;
-        }
-
-        .blocked-user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #667eea;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-weight: bold;
-        }
-
-        .blocked-user-info h4 {
-            margin: 0;
-            color: #333;
-        }
-
-        .blocked-user-info p {
-            margin: 5px 0 0 0;
-            color: #999;
-            font-size: 13px;
-        }
-
-        .danger-zone {
-            padding: 20px;
-            background: #ffebee;
-            border: 2px solid #f44336;
-            border-radius: 8px;
-            margin-top: 30px;
-        }
-
-        .danger-zone h3 {
-            margin-top: 0;
-            color: #c62828;
-        }
-
-        .danger-zone p {
-            color: #c62828;
-            margin-bottom: 15px;
-        }
-
-        .password-strength {
-            height: 5px;
-            background: #ddd;
-            border-radius: 3px;
-            margin-top: 8px;
-            overflow: hidden;
-        }
-
-        .password-strength-bar {
-            height: 100%;
-            width: 0%;
-            background: #f44336;
-            transition: width 0.3s;
-        }
-
-        .password-strength-bar.medium {
-            width: 50%;
-            background: #ff9800;
-        }
-
-        .password-strength-bar.strong {
-            width: 100%;
-            background: #4caf50;
-        }
-
-        @media (max-width: 768px) {
-            .settings-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .settings-sidebar {
-                position: static;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - Verified Match</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, sans-serif; background: #f5f5f5; min-height: 100vh; }
+.topbar { background: #667eea; color: white; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+.topbar .logo { font-size: 20px; font-weight: 700; }
+.topbar nav a { color: rgba(255,255,255,0.85); text-decoration: none; margin-left: 16px; font-size: 14px; }
+.topbar nav a.active { color: white; font-weight: 600; }
+.logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 13px; }
+.page { max-width: 820px; margin: 0 auto; padding: 30px 20px; }
+.layout { display: grid; grid-template-columns: 200px 1fr; gap: 24px; }
+@media(max-width:650px){ .layout { grid-template-columns: 1fr; } }
+.sidebar-nav { background: white; border-radius: 16px; padding: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); height: fit-content; position: sticky; top: 20px; }
+.sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 10px; color: #555; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; }
+.sidebar-nav a:hover { background: #f0f3ff; color: #667eea; }
+.sidebar-nav a.active { background: #667eea; color: white; }
+.card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 20px; }
+.section-title { font-size: 17px; font-weight: 700; color: #333; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+.setting-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #f8f8f8; gap: 16px; }
+.setting-row:last-child { border-bottom: none; }
+.setting-info h4 { font-size: 14px; color: #333; margin-bottom: 3px; }
+.setting-info p { font-size: 12px; color: #888; }
+.toggle { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #e0e0e0; border-radius: 26px; cursor: pointer; transition: 0.3s; }
+.slider:before { position: absolute; content: ''; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+input:checked + .slider { background: #667eea; }
+input:checked + .slider:before { transform: translateX(22px); }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; color: #666; font-weight: 600; margin-bottom: 6px; }
+.form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: inherit; outline: none; background: #fafafa; }
+.form-group input:focus, .form-group select:focus { border-color: #667eea; background: white; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.save-btn { background: linear-gradient(135deg,#667eea,#764ba2); color: white; border: none; padding: 11px 28px; border-radius: 22px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.save-btn:hover { opacity: 0.9; }
+.danger-btn { background: none; border: 2px solid #ff4757; color: #ff4757; padding: 10px 22px; border-radius: 22px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.danger-btn:hover { background: #ff4757; color: white; }
+.premium-card { background: linear-gradient(135deg,#667eea,#764ba2); color: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+.premium-card h3 { font-size: 20px; margin-bottom: 8px; }
+.premium-card p { opacity: 0.85; font-size: 14px; margin-bottom: 16px; }
+.premium-features { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+.premium-feature { font-size: 13px; opacity: 0.9; }
+.premium-btn { background: white; color: #667eea; border: none; padding: 11px 26px; border-radius: 22px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.save-toast { position: fixed; bottom: 24px; right: 24px; background: #333; color: white; padding: 12px 22px; border-radius: 10px; font-size: 14px; display: none; z-index: 999; }
+</style>
 </head>
 <body>
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; margin-bottom: 30px;">
-        <div style="max-width: 1200px; margin: 0 auto;">
-            <h1 style="margin: 0;">⚙️ Account Settings</h1>
-            <p style="margin: 10px 0 0 0;">Manage your profile, privacy, and security preferences</p>
-        </div>
+<div class="topbar">
+  <div class="logo">💜 Verified Match</div>
+  <nav>
+    <a href="./dashboard.html">Home</a>
+    <a href="./browse.html">Browse</a>
+    <a href="./matches.html">Matches</a>
+    <a href="./messages.html">Messages</a>
+    <a href="./notifications.html">Alerts</a>
+    <a href="./profile.html">Profile</a>
+  </nav>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+<div class="page">
+  <div class="layout">
+    <div class="sidebar-nav">
+      <a href="#account" class="active" onclick="showSection('account',this)">👤 Account</a>
+      <a href="#notifications" onclick="showSection('notifs',this)">🔔 Notifications</a>
+      <a href="#privacy" onclick="showSection('privacy',this)">🔒 Privacy</a>
+      <a href="#preferences" onclick="showSection('prefs',this)">🎯 Preferences</a>
+      <a href="#premium" onclick="showSection('premium',this)">⭐ Premium</a>
+      <a href="#danger" onclick="showSection('danger',this)" style="color:#ff4757">⚠️ Danger Zone</a>
     </div>
-
-    <div class="settings-container">
-        <div class="settings-sidebar">
-            <div class="settings-nav">
-                <button class="active" onclick="switchSection('account')">Account</button>
-                <button onclick="switchSection('privacy')">Privacy & Safety</button>
-                <button onclick="switchSection('notifications')">Notifications</button>
-                <button onclick="switchSection('devices')">Devices</button>
-                <button onclick="switchSection('blocked')">Blocked Users</button>
-                <button onclick="switchSection('data')">Data & Privacy</button>
-                <button onclick="switchSection('danger')">Danger Zone</button>
-            </div>
+    <div>
+      <div id="sec-account">
+        <div class="card">
+          <div class="section-title">👤 Account Settings</div>
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input id="s-fname" value="Alex"></div>
+            <div class="form-group"><label>Last Name</label><input id="s-lname" value="Johnson"></div>
+          </div>
+          <div class="form-group"><label>Email Address</label><input id="s-email" value="test@verifiedmatch.uk"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Date of Birth</label><input type="date" id="s-dob" value="1996-03-15"></div>
+            <div class="form-group"><label>Phone Number</label><input id="s-phone" placeholder="+44 7700 000000"></div>
+          </div>
+          <button class="save-btn" onclick="showToast()">Save Changes</button>
         </div>
-
-        <!-- Account Settings -->
-        <div id="account" class="settings-section active">
-            <h2>Account Settings</h2>
-            
-            <div class="settings-group">
-                <h3>Email Address</h3>
-                <div class="form-group">
-                    <label>Current Email</label>
-                    <input type="email" value="john.smith@example.com" readonly>
-                </div>
-                <button class="btn btn-secondary">Change Email</button>
-            </div>
-
-            <div class="settings-group">
-                <h3>Password</h3>
-                <div class="alert alert-info">Change your password regularly to keep your account secure</div>
-                <div class="form-group">
-                    <label>Current Password</label>
-                    <input type="password" placeholder="Enter current password">
-                </div>
-                <div class="form-group">
-                    <label>New Password</label>
-                    <input type="password" placeholder="Enter new password" oninput="checkPasswordStrength(this.value)">
-                    <div class="password-strength">
-                        <div class="password-strength-bar" id="strengthBar"></div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" placeholder="Confirm new password">
-                </div>
-                <button class="btn btn-primary">Update Password</button>
-            </div>
-
-            <div class="settings-group">
-                <h3>Two-Factor Authentication</h3>
-                <div class="alert alert-warning">Two-factor authentication is not enabled. Enable it to secure your account.</div>
-                <button class="btn btn-primary">Enable 2FA</button>
-            </div>
+        <div class="card">
+          <div class="section-title">🔑 Change Password</div>
+          <div class="form-group"><label>Current Password</label><input type="password" placeholder="Enter current password"></div>
+          <div class="form-group"><label>New Password</label><input type="password" placeholder="At least 8 characters"></div>
+          <div class="form-group"><label>Confirm New Password</label><input type="password" placeholder="Repeat new password"></div>
+          <button class="save-btn" onclick="showToast()">Update Password</button>
         </div>
-
-        <!-- Privacy & Safety -->
-        <div id="privacy" class="settings-section">
-            <h2>Privacy & Safety</h2>
-            
-            <div class="settings-group">
-                <h3>Profile Visibility</h3>
-                <div class="toggle-group">
-                    <label>Show my profile to other users</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="toggle-group">
-                    <label>Allow messages from unmatched users</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="settings-group">
-                <h3>Distance & Location</h3>
-                <div class="form-group">
-                    <label>Maximum Distance (miles)</label>
-                    <input type="text" value="50">
-                </div>
-                <div class="toggle-group">
-                    <label>Share my exact location</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="settings-group">
-                <h3>Who Can See Your Activity</h3>
-                <div class="form-group">
-                    <label>Show when I was last active</label>
-                    <select>
-                        <option>Everyone</option>
-                        <option>Matches only</option>
-                        <option>Nobody</option>
-                    </select>
-                </div>
-            </div>
+      </div>
+      <div id="sec-notifs" style="display:none">
+        <div class="card">
+          <div class="section-title">🔔 Notification Preferences</div>
+          <div class="setting-row"><div class="setting-info"><h4>New Matches</h4><p>Get notified when you get a new match</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>New Messages</h4><p>Get notified when you receive a message</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>Profile Likes</h4><p>Get notified when someone likes your profile</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>Profile Views</h4><p>Get notified when someone views your profile</p></div><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>Email Notifications</h4><p>Receive notifications via email</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>Weekly Digest</h4><p>Weekly summary of your activity</p></div><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+          <br><button class="save-btn" onclick="showToast()">Save Preferences</button>
         </div>
-
-        <!-- Notifications -->
-        <div id="notifications" class="settings-section">
-            <h2>Notification Preferences</h2>
-            
-            <div class="settings-group">
-                <h3>Email Notifications</h3>
-                <div class="toggle-group">
-                    <label>Match notifications</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="toggle-group">
-                    <label>New message alerts</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="toggle-group">
-                    <label>Profile likes</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="toggle-group">
-                    <label>Weekly digest</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="settings-group">
-                <h3>Push Notifications</h3>
-                <div class="toggle-group">
-                    <label>New matches</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="toggle-group">
-                    <label>Messages</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-
-            <button class="btn btn-primary">Save Preferences</button>
+      </div>
+      <div id="sec-privacy" style="display:none">
+        <div class="card">
+          <div class="section-title">🔒 Privacy Settings</div>
+          <div class="setting-row"><div class="setting-info"><h4>Show Online Status</h4><p>Let others see when you are online</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>Show Last Active</h4><p>Show when you were last active</p></div><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>Read Receipts</h4><p>Let matches see when you have read their messages</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>Incognito Mode</h4><p>Browse profiles without being seen (Premium)</p></div><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+          <div class="setting-row"><div class="setting-info"><h4>Block Screenshots</h4><p>Prevent others from screenshotting your profile</p></div><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+          <br><button class="save-btn" onclick="showToast()">Save Settings</button>
         </div>
-
-        <!-- Devices -->
-        <div id="devices" class="settings-section">
-            <h2>Active Devices</h2>
-            <div class="alert alert-info">Review and manage devices where you're logged in</div>
-            
-            <div class="device-list">
-                <div class="device-item">
-                    <div class="device-info">
-                        <h4>🖥️ Chrome on MacOS</h4>
-                        <p>London, UK • Last active: 2 hours ago</p>
-                    </div>
-                    <button class="btn btn-secondary">Current</button>
-                </div>
-                <div class="device-item">
-                    <div class="device-info">
-                        <h4>📱 Safari on iPhone</h4>
-                        <p>London, UK • Last active: 1 day ago</p>
-                    </div>
-                    <button class="btn btn-danger" onclick="alert('Device logged out')">Logout</button>
-                </div>
-                <div class="device-item">
-                    <div class="device-info">
-                        <h4>🔐 Android Device</h4>
-                        <p>Unknown location • Last active: 5 days ago</p>
-                    </div>
-                    <button class="btn btn-danger" onclick="alert('Device logged out')">Logout</button>
-                </div>
-            </div>
-            <button class="btn btn-danger" style="margin-top: 15px;">Logout All Other Devices</button>
+      </div>
+      <div id="sec-prefs" style="display:none">
+        <div class="card">
+          <div class="section-title">🎯 Match Preferences</div>
+          <div class="form-row">
+            <div class="form-group"><label>Min Age</label><input type="number" value="22" min="18" max="99"></div>
+            <div class="form-group"><label>Max Age</label><input type="number" value="35" min="18" max="99"></div>
+          </div>
+          <div class="form-group"><label>Max Distance</label><select><option>5 miles</option><option selected>10 miles</option><option>25 miles</option><option>50 miles</option><option>Anywhere in the UK</option></select></div>
+          <div class="form-group"><label>Show Me</label><select><option>Women</option><option>Men</option><option>Everyone</option></select></div>
+          <div class="setting-row"><div class="setting-info"><h4>Only Show Verified Profiles</h4><p>Filter out unverified accounts</p></div><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+          <br><button class="save-btn" onclick="showToast()">Save Preferences</button>
         </div>
-
-        <!-- Blocked Users -->
-        <div id="blocked" class="settings-section">
-            <h2>Blocked Users</h2>
-            <div class="alert alert-info">Users you've blocked won't be able to find you or send you messages</div>
-            
-            <div class="blocked-users">
-                <div class="blocked-user">
-                    <div style="display: flex; align-items: center;">
-                        <div class="blocked-user-avatar">MD</div>
-                        <div class="blocked-user-info">
-                            <h4>Mike Davis</h4>
-                            <p>Blocked 2 weeks ago</p>
-                        </div>
-                    </div>
-                    <button class="btn btn-secondary">Unblock</button>
-                </div>
-                <div class="blocked-user">
-                    <div style="display: flex; align-items: center;">
-                        <div class="blocked-user-avatar">SJ</div>
-                        <div class="blocked-user-info">
-                            <h4>Sarah Johnson</h4>
-                            <p>Blocked 1 month ago</p>
-                        </div>
-                    </div>
-                    <button class="btn btn-secondary">Unblock</button>
-                </div>
-            </div>
+      </div>
+      <div id="sec-premium" style="display:none">
+        <div class="premium-card">
+          <h3>⭐ Verified Match Premium</h3>
+          <p>Unlock all features and find your perfect match faster</p>
+          <div class="premium-features">
+            <div class="premium-feature">✓ Unlimited likes</div>
+            <div class="premium-feature">✓ See who liked you</div>
+            <div class="premium-feature">✓ Incognito mode</div>
+            <div class="premium-feature">✓ Priority in search</div>
+            <div class="premium-feature">✓ Read receipts</div>
+            <div class="premium-feature">✓ Super likes x5/day</div>
+          </div>
+          <button class="premium-btn">🔓 Upgrade for £14.99/month</button>
         </div>
-
-        <!-- Data & Privacy -->
-        <div id="data" class="settings-section">
-            <h2>Data & Privacy</h2>
-            
-            <div class="settings-group">
-                <h3>Download Your Data</h3>
-                <p>Get a copy of all your data in a portable format (JSON)</p>
-                <button class="btn btn-secondary">Download My Data</button>
-            </div>
-
-            <div class="settings-group">
-                <h3>Privacy Policy</h3>
-                <p><a href="#" style="color: #667eea;">Read our Privacy Policy</a></p>
-            </div>
-
-            <div class="settings-group">
-                <h3>Terms of Service</h3>
-                <p><a href="#" style="color: #667eea;">Read our Terms of Service</a></p>
-            </div>
+        <div class="card">
+          <div class="section-title">Current Plan</div>
+          <div class="setting-row"><div class="setting-info"><h4>Plan</h4><p>Premium Member</p></div><span style="color:#667eea;font-weight:700">⭐ Active</span></div>
+          <div class="setting-row"><div class="setting-info"><h4>Next Billing</h4><p>Renews automatically</p></div><span style="color:#888;font-size:13px">6 June 2026</span></div>
+          <div class="setting-row"><div class="setting-info"><h4>Amount</h4><p>Monthly subscription</p></div><span style="font-weight:700">£14.99</span></div>
         </div>
-
-        <!-- Danger Zone -->
-        <div id="danger" class="settings-section">
-            <h2>Account Deletion</h2>
-            
-            <div class="danger-zone">
-                <h3>⚠️ Delete Account Permanently</h3>
-                <p>Deleting your account is permanent and cannot be undone. All your data will be erased.</p>
-                <div class="form-group">
-                    <label>Type "DELETE" to confirm</label>
-                    <input type="text" placeholder="Type DELETE">
-                </div>
-                <button class="btn btn-danger">Delete My Account Permanently</button>
-            </div>
+      </div>
+      <div id="sec-danger" style="display:none">
+        <div class="card">
+          <div class="section-title" style="color:#ff4757">⚠️ Danger Zone</div>
+          <div class="setting-row"><div class="setting-info"><h4>Pause Account</h4><p>Temporarily hide your profile from discovery</p></div><button class="save-btn" onclick="showToast('Account paused')">Pause</button></div>
+          <div class="setting-row"><div class="setting-info"><h4>Download My Data</h4><p>Export a copy of all your data</p></div><button class="save-btn" onclick="showToast('Download started')">Export</button></div>
+          <div class="setting-row" style="margin-top:20px"><div class="setting-info"><h4 style="color:#ff4757">Delete Account</h4><p>Permanently delete your account and all data. This cannot be undone.</p></div><button class="danger-btn" onclick="confirmDelete()">Delete</button></div>
         </div>
+      </div>
     </div>
+  </div>
+</div>
+<div class="save-toast" id="toast">✅ Settings saved!</div>
+<script>
+const session = JSON.parse(localStorage.getItem('vm_session')||'null');
+if(!session){window.location.href='./login.html';}
+const user = JSON.parse(localStorage.getItem('vm_current_user')||'{}');
+if(user.firstName){ document.getElementById('s-fname').value=user.firstName; }
+if(user.email){ document.getElementById('s-email').value=user.email; }
 
-    <script>
-        function switchSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.settings-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Update active button
-            document.querySelectorAll('.settings-nav button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
+function showSection(id, el){
+  ['account','notifs','privacy','prefs','premium','danger'].forEach(s=>{
+    document.getElementById('sec-'+s).style.display='none';
+  });
+  document.getElementById('sec-'+id).style.display='block';
+  document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));
+  el.classList.add('active');
+  return false;
+}
 
-        function checkPasswordStrength(password) {
-            const bar = document.getElementById('strengthBar');
-            if (password.length < 8) {
-                bar.className = 'password-strength-bar';
-            } else if (password.length < 12 || !/[A-Z]/.test(password)) {
-                bar.className = 'password-strength-bar medium';
-            } else {
-                bar.className = 'password-strength-bar strong';
-            }
-        }
-    </script>
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = '✅ ' + (msg||'Settings saved!');
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',2500);
+}
+
+function confirmDelete(){
+  if(confirm('Are you sure you want to delete your account? This cannot be undone.')){
+    localStorage.clear();
+    window.location.href='./login.html';
+  }
+}
+
+function logout(){
+  localStorage.removeItem('vm_session');
+  localStorage.removeItem('vm_current_user');
+  window.location.href='./login.html';
+}
+</script>
 </body>
 </html>
