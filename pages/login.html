@@ -1,83 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Verified Match</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <style>
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        .login-container { width: 100%; max-width: 450px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
-        .login-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; text-align: center; }
-        .logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .logo-text { font-size: 1.5rem; font-weight: 600; }
-        .tagline { font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem; }
-        .login-content { padding: 2.5rem; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333; }
-        .form-group input { width: 100%; padding: 0.875rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: border-color 0.3s; }
-        .form-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
-        .remember-forgot { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-size: 0.9rem; }
-        .remember-forgot label { margin: 0; cursor: pointer; }
-        .forgot-link { color: #667eea; text-decoration: none; }
-        .forgot-link:hover { text-decoration: underline; }
-        .login-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); }
-        .divider { text-align: center; margin: 1.5rem 0; position: relative; }
-        .divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #ddd; }
-        .divider span { background: white; padding: 0 1rem; position: relative; color: #999; font-size: 0.9rem; }
-        .social-login { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-        .social-btn { padding: 0.75rem; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; font-weight: 500; transition: all 0.3s; }
-        .social-btn:hover { border-color: #667eea; color: #667eea; }
-        .signup-link { text-align: center; color: #666; font-size: 0.9rem; }
-        .signup-link a { color: #667eea; text-decoration: none; font-weight: 600; }
-        .signup-link a:hover { text-decoration: underline; }
-        .checkbox { margin-right: 0.5rem; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Verified Match</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .login-container { width: 100%; max-width: 420px; }
+    .login-header { text-align: center; color: white; margin-bottom: 28px; }
+    .logo { font-size: 3rem; margin-bottom: 8px; }
+    .logo-text { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
+    .tagline { font-size: 0.9rem; opacity: 0.85; }
+    .login-card { background: white; border-radius: 16px; padding: 36px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .login-card h2 { font-size: 1.4rem; color: #333; margin-bottom: 6px; }
+    .login-card .subtitle { font-size: 0.88rem; color: #999; margin-bottom: 24px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #444; margin-bottom: 6px; }
+    .form-group input { width: 100%; padding: 11px 14px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem; color: #333; transition: border-color 0.2s; outline: none; }
+    .form-group input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+    .form-group input.error { border-color: #ef4444; }
+    .remember-forgot { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.85rem; }
+    .remember-label { display: flex; align-items: center; gap: 6px; color: #555; cursor: pointer; }
+    .forgot-link { color: #667eea; text-decoration: none; font-weight: 500; }
+    .forgot-link:hover { text-decoration: underline; }
+    .login-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .login-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .divider { text-align: center; margin: 20px 0; color: #ccc; font-size: 0.85rem; position: relative; }
+    .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 42%; height: 1px; background: #e5e7eb; }
+    .divider::before { left: 0; } .divider::after { right: 0; }
+    .social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .social-btn { padding: 11px; border: 1.5px solid #e5e7eb; border-radius: 8px; background: white; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.2s; color: #444; }
+    .social-btn:hover { border-color: #667eea; background: #f8f7ff; }
+    .signup-link { text-align: center; margin-top: 22px; font-size: 0.88rem; color: #777; }
+    .signup-link a { color: #667eea; text-decoration: none; font-weight: 600; }
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.88rem; }
+    .alert-error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .alert-info { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .demo-box { background: #f8f7ff; border: 1px solid #e0e7ff; border-radius: 8px; padding: 12px 14px; margin-bottom: 20px; font-size: 0.82rem; color: #555; }
+    .demo-box strong { color: #667eea; }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <div class="logo">💕</div>
-            <div class="logo-text">Verified Match</div>
-            <div class="tagline">Find Your Perfect Match</div>
-        </div>
-        <div class="login-content">
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" required placeholder="your@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required placeholder="Enter your password">
-                </div>
-                <div class="remember-forgot">
-                    <label><input type="checkbox" class="checkbox" name="remember"> Remember me</label>
-                    <a href="#" class="forgot-link">Forgot password?</a>
-                </div>
-                <button type="submit" class="login-btn">Sign In</button>
-            </form>
-            <div class="divider"><span>or</span></div>
-            <div class="social-login">
-                <button class="social-btn">Google</button>
-                <button class="social-btn">Facebook</button>
-            </div>
-            <div class="signup-link">
-                Don't have an account? <a href="#signup">Sign up now</a>
-            </div>
-        </div>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo">💕</div>
+      <div class="logo-text">Verified Match</div>
+      <div class="tagline">Find Your Perfect Match</div>
     </div>
-    <script src="../js/auth.js"></script>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            console.log('Login attempt:', {email, password});
-            alert('Welcome! Redirecting to dashboard...');
-            window.location.href = './dashboard.html';
+    <div class="login-card">
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to continue your journey</p>
+
+      <div id="alertBox" style="display:none;"></div>
+
+      <div class="demo-box">
+        💡 <strong>Demo account:</strong> test@verifiedmatch.uk / Password123
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="your@email.com" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required />
+        </div>
+        <div class="remember-forgot">
+          <label class="remember-label">
+            <input type="checkbox" id="rememberMe" /> Remember me
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+      </form>
+
+      <div class="divider">or</div>
+      <div class="social-btns">
+        <button class="social-btn" onclick="showAlert('Google login coming soon!', 'info')">Google</button>
+        <button class="social-btn" onclick="showAlert('Facebook login coming soon!', 'info')">Facebook</button>
+      </div>
+
+      <div class="signup-link">Don't have an account? <a href="./register.html">Sign up free</a></div>
+    </div>
+  </div>
+
+  <script>
+    // Seed demo account if not exists
+    (function() {
+      const users = JSON.parse(localStorage.getItem('vm_users') || '[]');
+      const demo = users.find(u => u.email === 'test@verifiedmatch.uk');
+      if (!demo) {
+        users.push({
+          id: 'user_demo',
+          firstName: 'Alex',
+          lastName: 'Johnson',
+          email: 'test@verifiedmatch.uk',
+          password: 'Password123',
+          age: 29,
+          gender: 'male',
+          location: 'London',
+          bio: 'Entrepreneur and fitness enthusiast. Love exploring London restaurants and weekend hikes.',
+          interests: ['Travel', 'Fitness', 'Cooking', 'Technology', 'Music'],
+          lookingFor: 'relationship',
+          verified: true,
+          premium: true,
+          profileViews: 247,
+          likes: 18,
+          matches: 9,
+          messages: 24,
+          createdAt: new Date().toISOString()
         });
-    </script>
+        localStorage.setItem('vm_users', JSON.stringify(users));
+      }
+    })();
+
+    // Redirect if already logged in
+    const session = JSON.parse(localStorage.getItem('vm_session') || 'null');
+    if (session && session.loggedIn) {
+      window.location.href = './dashboard.html';
+    }
+
+    function showAlert(msg, type) {
+      const box = document.getElementById('alertBox');
+      box.textContent = msg;
+      box.className = 'alert alert-' + type;
+      box.style.display = 'block';
+      if (type === 'info') setTimeout(() => { box.style.display = 'none'; }, 3000);
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('loginBtn');
+
+      if (!email || !password) { showAlert('Please fill in all fields.', 'error'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+
+      setTimeout(() => {
+        const users = JSON.parse(localStorage.getItem('vm_users') || '[]');
+        const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+        if (!user) {
+          showAlert('Incorrect email or password. Try the demo account above.', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+          return;
+        }
+
+        localStorage.setItem('vm_current_user', JSON.stringify(user));
+        localStorage.setItem('vm_session', JSON.stringify({ userId: user.id, loggedIn: true, loginTime: Date.now() }));
+
+        btn.textContent = 'Welcome back! Redirecting...';
+        setTimeout(() => { window.location.href = './dashboard.html'; }, 800);
+      }, 600);
+    }
+  </script>
 </body>
 </html>
