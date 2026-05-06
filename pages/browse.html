@@ -1,54 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse - Verified Match</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .container { max-width: 500px; background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; }
-        .card-stack { position: relative; width: 100%; height: 600px; padding: 30px; display: flex; align-items: center; justify-content: center; }
-        .card { position: absolute; width: 100%; max-width: 350px; height: 450px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; cursor: grab; transition: all 0.3s; }
-        .card:active { cursor: grabbing; }
-        .card-image { width: 100%; height: 70%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
-        .card-info { padding: 20px; }
-        .card-name { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
-        .card-details { font-size: 14px; color: #999; margin-bottom: 10px; }
-        .card-interests { font-size: 12px; color: #667eea; }
-        .actions { display: flex; gap: 15px; padding: 20px; justify-content: center; }
-        .btn { border: none; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; font-size: 24px; transition: all 0.3s; }
-        .btn-pass { background: #e0e0e0; color: #999; }
-        .btn-pass:hover { background: #bdbdbd; transform: scale(1.1); }
-        .btn-like { background: #e74c3c; color: white; }
-        .btn-like:hover { background: #c0392b; transform: scale(1.1); }
-        .btn-super { background: #667eea; color: white; }
-        .btn-super:hover { background: #764ba2; transform: scale(1.1); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse - Verified Match</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+    .topbar { background: rgba(0,0,0,0.15); backdrop-filter: blur(10px); color: white; padding: 0; }
+    .topbar-inner { max-width: 1100px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .brand { font-size: 1.2rem; font-weight: 700; text-decoration: none; color: white; }
+    .nav { display: flex; gap: 4px; }
+    .nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 7px 13px; border-radius: 8px; font-size: 0.88rem; transition: all 0.2s; }
+    .nav a:hover, .nav a.active { background: rgba(255,255,255,0.2); color: white; }
+    .main { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; min-height: calc(100vh - 60px); }
+    .page-title { color: white; text-align: center; margin-bottom: 28px; }
+    .page-title h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; }
+    .page-title p { opacity: 0.8; font-size: 0.92rem; }
+    .deck { position: relative; width: 340px; height: 520px; }
+    .profile-card { position: absolute; width: 100%; height: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.25); background: white; cursor: grab; user-select: none; transition: transform 0.1s; top: 0; left: 0; }
+    .profile-card:active { cursor: grabbing; }
+    .profile-card.swiping { transition: none; }
+    .profile-card.fly-left { transition: transform 0.5s ease, opacity 0.5s; transform: translateX(-150%) rotate(-20deg) !important; opacity: 0; pointer-events: none; }
+    .profile-card.fly-right { transition: transform 0.5s ease, opacity 0.5s; transform: translateX(150%) rotate(20deg) !important; opacity: 0; pointer-events: none; }
+    .card-bg { width: 100%; height: 62%; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); position: relative; display: flex; align-items: center; justify-content: center; }
+    .card-avatar { width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; color: white; border: 4px solid rgba(255,255,255,0.6); }
+    .card-verified { position: absolute; top: 14px; right: 14px; background: #10b981; color: white; font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 12px; }
+    .card-like-stamp { position: absolute; top: 30px; left: 20px; font-size: 2rem; font-weight: 900; color: #10b981; border: 4px solid #10b981; border-radius: 8px; padding: 4px 10px; transform: rotate(-15deg); opacity: 0; transition: opacity 0.15s; pointer-events: none; }
+    .card-pass-stamp { position: absolute; top: 30px; right: 20px; font-size: 2rem; font-weight: 900; color: #ef4444; border: 4px solid #ef4444; border-radius: 8px; padding: 4px 10px; transform: rotate(15deg); opacity: 0; transition: opacity 0.15s; pointer-events: none; }
+    .card-info { padding: 18px 20px; }
+    .card-name { font-size: 1.3rem; font-weight: 700; color: #222; margin-bottom: 4px; }
+    .card-meta { font-size: 0.85rem; color: #888; margin-bottom: 10px; }
+    .card-bio { font-size: 0.85rem; color: #555; margin-bottom: 10px; line-height: 1.4; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .card-tag { background: #f0f0ff; color: #667eea; font-size: 0.75rem; padding: 3px 10px; border-radius: 12px; }
+    .actions { display: flex; justify-content: center; gap: 20px; margin-top: 24px; }
+    .action-btn { width: 64px; height: 64px; border-radius: 50%; border: none; font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(0,0,0,0.15); transition: all 0.2s; }
+    .btn-pass { background: white; color: #ef4444; }
+    .btn-pass:hover { background: #fef2f2; transform: scale(1.1); }
+    .btn-super { background: white; color: #f59e0b; }
+    .btn-super:hover { background: #fffbeb; transform: scale(1.1); }
+    .btn-like { background: white; color: #10b981; }
+    .btn-like:hover { background: #ecfdf5; transform: scale(1.1); }
+    .counter { color: rgba(255,255,255,0.7); text-align: center; margin-top: 12px; font-size: 0.82rem; }
+    .match-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 999; }
+    .match-popup.show { display: flex; }
+    .match-card { background: white; border-radius: 24px; padding: 40px; text-align: center; max-width: 340px; }
+    .match-emoji { font-size: 4rem; margin-bottom: 12px; }
+    .match-card h2 { font-size: 1.6rem; color: #333; margin-bottom: 6px; }
+    .match-card p { color: #888; font-size: 0.92rem; margin-bottom: 24px; }
+    .match-btns { display: grid; gap: 10px; }
+    .match-btn { padding: 13px; border-radius: 10px; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+    .match-btn-msg { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+    .match-btn-keep { background: #f3f4f6; color: #555; }
+    .empty-state { text-align: center; color: white; }
+    .empty-state .emoji { font-size: 4rem; margin-bottom: 16px; }
+    .empty-state h2 { font-size: 1.4rem; margin-bottom: 8px; }
+    .empty-state p { opacity: 0.8; margin-bottom: 20px; }
+    .reload-btn { background: white; color: #667eea; border: none; padding: 12px 28px; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Discover Matches</h1>
-            <p>Swipe to find your perfect connection</p>
-        </header>
-        <div class="card-stack">
-            <div class="card">
-                <div class="card-image">Profile Photo</div>
-                <div class="card-info">
-                    <div class="card-name">Sophie Brown, 25</div>
-                    <div class="card-details">London, UK</div>
-                    <div class="card-interests">Yoga • Art • Travel • Coffee</div>
-                </div>
-            </div>
-        </div>
-        <div class="actions">
-            <button class="btn btn-pass" title="Pass">✕</button>
-            <button class="btn btn-super" title="Super Like">⭐</button>
-            <button class="btn btn-like" title="Like">❤</button>
-        </div>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="./dashboard.html" class="brand">💕 Verified Match</a>
+    <nav class="nav">
+      <a href="./browse.html" class="active">Browse</a>
+      <a href="./messages.html">Messages</a>
+      <a href="./matches.html">Matches</a>
+      <a href="./notifications.html">Notifications</a>
+      <a href="./profile.html">Profile</a>
+      <a href="./settings.html">Settings</a>
+    </nav>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-title">
+    <h1>Discover Matches</h1>
+    <p>Swipe right to like, left to pass</p>
+  </div>
+
+  <div class="deck" id="deck"></div>
+
+  <div class="actions" id="actionBtns">
+    <button class="action-btn btn-pass" onclick="swipe('left')" title="Pass">✕</button>
+    <button class="action-btn btn-super" onclick="swipe('super')" title="Super Like">★</button>
+    <button class="action-btn btn-like" onclick="swipe('right')" title="Like">❤️</button>
+  </div>
+  <div class="counter" id="counter"></div>
+</div>
+
+<!-- Match Popup -->
+<div class="match-popup" id="matchPopup">
+  <div class="match-card">
+    <div class="match-emoji">🎉</div>
+    <h2>It's a Match!</h2>
+    <p id="matchMsg">You and someone both liked each other!</p>
+    <div class="match-btns">
+      <button class="match-btn match-btn-msg" onclick="goMessages()">Send a Message 💬</button>
+      <button class="match-btn match-btn-keep" onclick="closeMatch()">Keep Swiping</button>
     </div>
-    <script src="../js/browse.js"></script>
+  </div>
+</div>
+
+<script>
+  const PROFILES = [
+    { id: 1, name: 'Sophie Brown', age: 25, location: 'London', bio: 'Yoga instructor and coffee lover. Weekends in the countryside.', interests: ['Yoga', 'Travel', 'Coffee', 'Dogs'], verified: true, color: '#667eea', initial: 'SB' },
+    { id: 2, name: 'Emma Clarke', age: 27, location: 'Brighton', bio: 'Graphic designer. Always planning the next adventure abroad.', interests: ['Art', 'Travel', 'Music', 'Cinema'], verified: true, color: '#764ba2', initial: 'EC' },
+    { id: 3, name: 'Olivia Martinez', age: 29, location: 'Manchester', bio: 'Foodie and fitness enthusiast. Brunch is basically religion.', interests: ['Foodie', 'Fitness', 'Cooking', 'Wine'], verified: false, color: '#f59e0b', initial: 'OM' },
+    { id: 4, name: 'Chloe Wilson', age: 24, location: 'London', bio: 'Software engineer who loves hiking and reading sci-fi.', interests: ['Technology', 'Hiking', 'Reading', 'Gaming'], verified: true, color: '#10b981', initial: 'CW' },
+    { id: 5, name: 'Isabelle Thomas', age: 31, location: 'Leeds', bio: 'Teacher by day, amateur chef by night. Serious about good food.', interests: ['Cooking', 'Wine', 'Theatre', 'Travel'], verified: true, color: '#ec4899', initial: 'IT' },
+    { id: 6, name: 'Amelia Davis', age: 26, location: 'London', bio: 'Journalist, bookworm, and occasional half-marathon runner.', interests: ['Reading', 'Fitness', 'Coffee', 'Photography'], verified: false, color: '#8b5cf6', initial: 'AD' },
+  ];
+
+  let currentIndex = 0;
+  let isDragging = false;
+  let startX = 0, startY = 0, currentX = 0;
+  let likedProfiles = [];
+
+  function renderCards() {
+    const deck = document.getElementById('deck');
+    deck.innerHTML = '';
+    if (currentIndex >= PROFILES.length) {
+      deck.innerHTML = '';
+      document.getElementById('actionBtns').style.display = 'none';
+      deck.innerHTML = `<div class="empty-state"><div class="emoji">💖</div><h2>You've seen everyone!</h2><p>Check back soon for new profiles.</p><button class="reload-btn" onclick="resetDeck()">Start Over</button></div>`;
+      document.getElementById('counter').textContent = '';
+      return;
+    }
+    // Render next 3 cards (back to front)
+    const visible = Math.min(3, PROFILES.length - currentIndex);
+    for (let i = visible - 1; i >= 0; i--) {
+      const p = PROFILES[currentIndex + i];
+      const card = document.createElement('div');
+      card.className = 'profile-card';
+      card.id = 'card-' + i;
+      card.style.zIndex = visible - i;
+      if (i > 0) {
+        card.style.transform = `scale(${1 - i * 0.04}) translateY(${i * 10}px)`;
+        card.style.opacity = 1 - i * 0.15;
+      }
+      card.innerHTML = `
+        <div class="card-bg" style="background: linear-gradient(160deg, ${p.color} 0%, ${p.color}bb 100%)">
+          <div class="card-avatar">${p.initial}</div>
+          ${p.verified ? '<div class="card-verified">✓ Verified</div>' : ''}
+          <div class="card-like-stamp" id="like-stamp-${i}">LIKE</div>
+          <div class="card-pass-stamp" id="pass-stamp-${i}">PASS</div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">${p.name}, ${p.age}</div>
+          <div class="card-meta">📍 ${p.location}</div>
+          <div class="card-bio">${p.bio}</div>
+          <div class="card-tags">${p.interests.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
+        </div>`;
+      if (i === 0) addDragListeners(card);
+      deck.appendChild(card);
+    }
+    document.getElementById('counter').textContent = `${currentIndex + 1} of ${PROFILES.length} profiles`;
+  }
+
+  function addDragListeners(card) {
+    card.addEventListener('mousedown', dragStart);
+    card.addEventListener('touchstart', dragStart, { passive: true });
+  }
+
+  function dragStart(e) {
+    isDragging = true;
+    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup', dragEnd);
+    document.addEventListener('touchmove', dragMove, { passive: true });
+    document.addEventListener('touchend', dragEnd);
+    const card = document.getElementById('card-0');
+    if (card) card.classList.add('swiping');
+  }
+
+  function dragMove(e) {
+    if (!isDragging) return;
+    currentX = (e.type === 'touchmove' ? e.touches[0].clientX : e.clientX) - startX;
+    const currentY = (e.type === 'touchmove' ? e.touches[0].clientY : e.clientY) - startY;
+    const card = document.getElementById('card-0');
+    if (!card) return;
+    const rotate = currentX * 0.08;
+    card.style.transform = `translateX(${currentX}px) translateY(${currentY * 0.3}px) rotate(${rotate}deg)`;
+    const likeStamp = document.getElementById('like-stamp-0');
+    const passStamp = document.getElementById('pass-stamp-0');
+    if (likeStamp) likeStamp.style.opacity = currentX > 30 ? Math.min((currentX - 30) / 60, 1) : 0;
+    if (passStamp) passStamp.style.opacity = currentX < -30 ? Math.min((-currentX - 30) / 60, 1) : 0;
+  }
+
+  function dragEnd() {
+    isDragging = false;
+    document.removeEventListener('mousemove', dragMove);
+    document.removeEventListener('mouseup', dragEnd);
+    document.removeEventListener('touchmove', dragMove);
+    document.removeEventListener('touchend', dragEnd);
+    const card = document.getElementById('card-0');
+    if (!card) return;
+    card.classList.remove('swiping');
+    if (currentX > 80) { swipe('right'); }
+    else if (currentX < -80) { swipe('left'); }
+    else {
+      card.style.transform = '';
+      const likeStamp = document.getElementById('like-stamp-0');
+      const passStamp = document.getElementById('pass-stamp-0');
+      if (likeStamp) likeStamp.style.opacity = 0;
+      if (passStamp) passStamp.style.opacity = 0;
+    }
+    currentX = 0;
+  }
+
+  function swipe(direction) {
+    const card = document.getElementById('card-0');
+    if (!card || currentIndex >= PROFILES.length) return;
+    const profile = PROFILES[currentIndex];
+    if (direction === 'right' || direction === 'super') {
+      card.classList.add('fly-right');
+      likedProfiles.push(profile.id);
+      // Random 30% chance of match
+      if (Math.random() < 0.3) {
+        setTimeout(() => {
+          document.getElementById('matchMsg').textContent = `You and ${profile.name} both liked each other!`;
+          document.getElementById('matchPopup').classList.add('show');
+        }, 500);
+      }
+    } else {
+      card.classList.add('fly-left');
+    }
+    currentIndex++;
+    setTimeout(renderCards, 350);
+  }
+
+  function closeMatch() {
+    document.getElementById('matchPopup').classList.remove('show');
+  }
+  function goMessages() {
+    document.getElementById('matchPopup').classList.remove('show');
+    window.location.href = './messages.html';
+  }
+  function resetDeck() {
+    currentIndex = 0;
+    likedProfiles = [];
+    document.getElementById('actionBtns').style.display = 'flex';
+    renderCards();
+  }
+
+  // Auth check
+  const session = JSON.parse(localStorage.getItem('vm_session') || 'null');
+  if (!session || !session.loggedIn) { window.location.href = './login.html'; }
+
+  renderCards();
+</script>
 </body>
 </html>
