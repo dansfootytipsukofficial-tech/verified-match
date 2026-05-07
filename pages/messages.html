@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Messages - Verified Match</title>
+    <link rel="stylesheet" href="../css/dark-mode.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, sans-serif; background: #f5f5f5; height: 100vh; display: flex; flex-direction: column; }
@@ -160,5 +161,7 @@ function filterConvos(){const q=document.getElementById('searchInput').value.toL
 function logout(){localStorage.removeItem('vm_session');localStorage.removeItem('vm_current_user');window.location.href='./login.html';}
 renderInbox(convos);
 </script>
+    <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
+    <script src="../js/theme.js"></script>
 </body>
 </html>
