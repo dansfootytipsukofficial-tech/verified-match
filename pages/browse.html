@@ -226,6 +226,7 @@
         setTimeout(() => {
           document.getElementById('matchMsg').textContent = `You and ${profile.name} both liked each other!`;
           document.getElementById('matchPopup').classList.add('show');
+                    if(typeof launchConfetti==='function'){launchConfetti();}
         }, 500);
       }
     } else {
@@ -257,5 +258,6 @@
 </script>
     <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
     <script src="../js/theme.js"></script>
+    <script src="../js/confetti.js"></script>
 </body>
 </html>
