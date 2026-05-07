@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compatibility Quiz - Verified Match</title>
+<link rel="stylesheet" href="../css/dark-mode.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f9fa;min-height:100vh}
+.nav{background:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:sticky;top:0;z-index:100}
+.nav-logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:6px}
+.nav-links a{text-decoration:none;color:#666;font-size:0.85rem;padding:6px 12px;border-radius:20px;transition:all 0.2s}
+.nav-links a:hover,.nav-links a.active{background:linear-gradient(135deg,#667eea,#764ba2);color:white;-webkit-text-fill-color:white}
+.hero{background:linear-gradient(135deg,#667eea,#764ba2);padding:40px 20px;text-align:center;color:white}
+.hero h1{font-size:2rem;margin-bottom:8px}
+.hero p{opacity:0.9;font-size:1rem}
+.container{max-width:620px;margin:0 auto;padding:24px 20px}
+.progress-wrap{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:20px}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.progress-label{font-size:0.85rem;color:#666;font-weight:500}
+.progress-num{font-size:0.85rem;font-weight:700;color:#667eea}
+.progress-bar{height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:4px;transition:width 0.4s ease}
+.quiz-card{background:white;border-radius:20px;padding:32px;box-shadow:0 8px 40px rgba(0,0,0,0.1);text-align:center;min-height:360px;display:flex;flex-direction:column;justify-content:space-between}
+.q-category{font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:#667eea;font-weight:700;margin-bottom:12px}
+.q-emoji{font-size:3rem;margin-bottom:16px;display:block}
+.q-text{font-size:1.2rem;font-weight:600;color:#333;line-height:1.5;margin-bottom:28px}
+.options{display:grid;gap:12px}
+.option-btn{padding:14px 20px;border:2px solid #e8e8e8;border-radius:14px;background:white;font-size:0.95rem;color:#333;cursor:pointer;transition:all 0.2s;text-align:left;font-weight:500}
+.option-btn:hover{border-color:#667eea;background:#f5f3ff;color:#667eea}
+.option-btn.selected{border-color:#667eea;background:linear-gradient(135deg,#667eea,#764ba2);color:white}
+.nav-btns{display:flex;gap:12px;margin-top:20px}
+.btn-back{flex:1;padding:14px;border:2px solid #e8e8e8;background:white;border-radius:14px;font-size:0.95rem;font-weight:600;cursor:pointer;color:#666;transition:all 0.2s}
+.btn-back:hover{border-color:#667eea;color:#667eea}
+.btn-next{flex:2;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:14px;font-size:0.95rem;font-weight:600;cursor:pointer;transition:opacity 0.2s}
+.btn-next:disabled{opacity:0.4;cursor:not-allowed}
+.btn-next:not(:disabled):hover{opacity:0.9}
+.result-card{background:white;border-radius:20px;padding:40px;box-shadow:0 8px 40px rgba(0,0,0,0.1);text-align:center}
+.result-ring{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 30px rgba(102,126,234,0.4)}
+.result-pct{font-size:2.5rem;font-weight:900;color:white}
+.result-label{font-size:1.3rem;font-weight:800;color:#333;margin-bottom:8px}
+.result-desc{font-size:0.95rem;color:#666;line-height:1.6;margin-bottom:24px}
+.traits{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px}
+.trait{padding:6px 16px;border-radius:20px;font-size:0.85rem;font-weight:600}
+.trait.pos{background:#e8f5e9;color:#2e7d32}
+.trait.neg{background:#fff3e0;color:#e65100}
+.result-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-share{flex:1;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:0.9rem;font-weight:600;cursor:pointer}
+.btn-retake{flex:1;padding:12px;border:2px solid #e8e8e8;background:white;border-radius:12px;font-size:0.9rem;font-weight:600;cursor:pointer;color:#666}
+.match-suggestions{margin-top:24px}
+.match-suggestions h3{font-size:1rem;font-weight:700;color:#333;margin-bottom:14px}
+.suggested-match{display:flex;align-items:center;gap:12px;padding:12px;border:2px solid #e8e8e8;border-radius:14px;margin-bottom:10px;cursor:pointer;transition:border-color 0.2s}
+.suggested-match:hover{border-color:#667eea}
+.match-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.match-info{flex:1;text-align:left}
+.match-name{font-size:0.9rem;font-weight:700;color:#333}
+.match-compat{font-size:0.8rem;color:#667eea;font-weight:600}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<nav class="nav">
+<div class="nav-logo">💕 Verified Match</div>
+<div class="nav-links">
+<a href="dashboard.html">🏠</a>
+<a href="browse.html">💫 Browse</a>
+<a href="matches.html">💕 Matches</a>
+<a href="quiz.html" class="active">✨ Quiz</a>
+</div>
+</nav>
+<div class="hero">
+<h1>✨ Compatibility Quiz</h1>
+<p>Discover your personality type and find your perfect match</p>
+</div>
+<div class="container">
+<div id="quizSection">
+<div class="progress-wrap">
+<div class="progress-header">
+<span class="progress-label">Your progress</span>
+<span class="progress-num" id="progressNum">1 / 10</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+</div>
+<div class="quiz-card">
+<div>
+<div class="q-category" id="qCategory">Lifestyle</div>
+<span class="q-emoji" id="qEmoji">😄</span>
+<div class="q-text" id="qText">Loading...</div>
+<div class="options" id="options"></div>
+</div>
+<div class="nav-btns">
+<button class="btn-back" id="btnBack" onclick="prevQ()" disabled>Back</button>
+<button class="btn-next" id="btnNext" onclick="nextQ()" disabled>Next &rarr;</button>
+</div>
+</div>
+</div>
+<div id="resultSection" class="hidden">
+<div class="result-card">
+<div class="result-ring"><div class="result-pct" id="resultPct">0%</div></div>
+<div class="result-label" id="resultLabel">Your Type</div>
+<div class="result-desc" id="resultDesc"></div>
+<div class="traits" id="resultTraits"></div>
+<div class="result-actions">
+<button class="btn-share" onclick="shareResult()">Share Result 🎉</button>
+<button class="btn-retake" onclick="retakeQuiz()">Retake Quiz</button>
+</div>
+<div class="match-suggestions">
+<h3>💕 Your Best Matches Based on This Quiz</h3>
+<div id="suggestedMatches"></div>
+</div>
+</div>
+</div>
+</div>
+<script>
+const session=JSON.parse(localStorage.getItem('vm_session')||'null');
+if(!session){window.location.href='login.html';}
+const questions=[
+{cat:'Lifestyle',emoji:'🌅',text:'What does your ideal weekend look like?',opts:['Adventures outdoors','Cosy night in','Social with friends','Productive solo time'],scores:[4,1,3,2]},
+{cat:'Values',emoji:'💖',text:'What matters most in a relationship?',opts:['Trust & honesty','Passion & excitement','Stability & security','Growth & learning'],scores:[4,3,2,4]},
+{cat:'Communication',emoji:'💬',text:'How do you handle disagreements?',opts:['Talk it out immediately','Take time to reflect','Compromise quickly','Write down my thoughts'],scores:[3,2,4,3]},
+{cat:'Lifestyle',emoji:'🍽️',text:'Your perfect date would be...',opts:['Sunset hike & picnic','Fancy restaurant dinner','Cooking together at home','Spontaneous road trip'],scores:[4,2,3,4]},
+{cat:'Personality',emoji:'🚀',text:'Friends would describe you as...',opts:['The adventurous one','The caring one','The funny one','The deep thinker'],scores:[4,3,2,4]},
+{cat:'Future',emoji:'🏡',text:'Where do you see yourself in 5 years?',opts:['Travelling the world','Building a family home','Focused on career','Living spontaneously'],scores:[4,2,3,1]},
+{cat:'Interests',emoji:'🎵',text:'Your music taste is best described as...',opts:['Indie & Alternative','Pop & RnB','Classical & Jazz','Whatever\'s on'],scores:[3,2,4,1]},
+{cat:'Values',emoji:'🐮',text:'Your relationship with social media is...',opts:['Rarely use it','Love sharing moments','Only for staying in touch','Chronically online'],scores:[4,2,3,1]},
+{cat:'Lifestyle',emoji:'💤',text:'What\'s your sleep schedule like?',opts:['Early bird, up at 6am','Night owl, bed at 2am','Completely chaotic','8 hours, religiously'],scores:[2,3,1,4]},
+{cat:'Connection',emoji:'✨',text:'What makes you feel most connected to a partner?',opts:['Deep late-night talks','Physical affection','Sharing new experiences','Acts of service'],scores:[4,2,3,3]},
+];
+let current=0;
+let answers=[];
+let selectedIdx=null;
+function renderQ(){
+const q=questions[current];
+document.getElementById('qCategory').textContent=q.cat;
+document.getElementById('qEmoji').textContent=q.emoji;
+document.getElementById('qText').textContent=q.text;
+const prev=answers[current];
+document.getElementById('options').innerHTML=q.opts.map((o,i)=>`<button class="option-btn${prev===i?' selected':''}" onclick="selectOpt(${i})">${o}</button>`).join('');
+document.getElementById('progressNum').textContent=(current+1)+' / '+questions.length;
+document.getElementById('progressFill').style.width=((current+1)/questions.length*100)+'%';
+document.getElementById('btnBack').disabled=current===0;
+document.getElementById('btnNext').disabled=prev===undefined;
+document.getElementById('btnNext').textContent=current===questions.length-1?'See Results 🎉':'Next →';
+selectedIdx=prev!==undefined?prev:null;
+}
+function selectOpt(i){
+selectedIdx=i;
+document.querySelectorAll('.option-btn').forEach((b,idx)=>{
+b.classList.toggle('selected',idx===i);
+});
+document.getElementById('btnNext').disabled=false;
+}
+function nextQ(){
+if(selectedIdx===null)return;
+answers[current]=selectedIdx;
+if(current<questions.length-1){current++;renderQ();}
+else{showResults();}
+}
+function prevQ(){
+if(current>0){current--;renderQ();}
+}
+const types=[
+{label:'🔥 The Passionate Explorer',desc:'You live for new experiences and bring electric energy to every relationship. You need a partner who can keep up with your zest for life and shares your hunger for adventure. You love deeply and intensely.',traits:[{t:'Adventurous',p:true},{t:'Passionate',p:true},{t:'Spontaneous',p:true},{t:'May overlook stability',p:false}],min:30},
+{label:'💖 The Devoted Nurturer',desc:'You are the heart of every relationship. Warm, caring, and deeply loyal, you make your partner feel truly seen and loved. You value long-term commitment and emotional depth over everything.',traits:[{t:'Caring & warm',p:true},{t:'Deeply loyal',p:true},{t:'Emotionally intelligent',p:true},{t:'Can over-give',p:false}],min:20},
+{label:'🌟 The Thoughtful Dreamer',desc:'You are an old soul with big dreams. You need intellectual and emotional depth in a partner. You are incredibly thoughtful, creative, and value meaningful conversations over small talk.',traits:[{t:'Deep thinker',p:true},{t:'Creative',p:true},{t:'Authentic',p:true},{t:'Needs patience',p:false}],min:10},
+{label:'⚡ The Free Spirit',desc:'You value freedom, fun, and living in the moment. You bring humour and lightness to relationships but need a partner who respects your independence. Life with you is never boring!',traits:[{t:'Fun & funny',p:true},{t:'Independent',p:true},{t:'Easy-going',p:true},{t:'Commitment-wary',p:false}],min:0},
+];
+function showResults(){
+const total=answers.reduce((s,a,i)=>s+questions[i].scores[a],0);
+const max=questions.length*4;
+const pct=Math.round(total/max*100);
+const type=types.find(t=>total>=t.min)||types[types.length-1];
+document.getElementById('resultPct').textContent=pct+'%';
+document.getElementById('resultLabel').textContent=type.label;
+document.getElementById('resultDesc').textContent=type.desc;
+document.getElementById('resultTraits').innerHTML=type.traits.map(t=>`<span class="trait ${t.p?'pos':'neg'}">${t.t}</span>`).join('');
+const matches=[
+{name:'Sophie, 26',emoji:'👩',compat:Math.min(99,pct+5)},
+{name:'Emma, 29',emoji:'👱‍♀️',compat:Math.min(99,pct+2)},
+{name:'Alex, 30',emoji:'🧑',compat:Math.min(99,pct-3)},
+];
+document.getElementById('suggestedMatches').innerHTML=matches.map(m=>`<div class="suggested-match" onclick="window.location.href='matches.html'">
+<div class="match-avatar">${m.emoji}</div>
+<div class="match-info"><div class="match-name">${m.name}</div><div class="match-compat">${m.compat}% compatible with your type</div></div>
+<span style="color:#667eea;font-size:1.2rem">›</span>
+</div>`).join('');
+localStorage.setItem('vm_quiz_result',JSON.stringify({pct,type:type.label,traits:type.traits}));
+document.getElementById('quizSection').classList.add('hidden');
+document.getElementById('resultSection').classList.remove('hidden');
+}
+function retakeQuiz(){
+current=0;answers=[];selectedIdx=null;
+document.getElementById('quizSection').classList.remove('hidden');
+document.getElementById('resultSection').classList.add('hidden');
+renderQ();
+}
+function shareResult(){
+const pct=document.getElementById('resultPct').textContent;
+alert('🎉 Share your result: "I scored '+pct+' on the Verified Match Compatibility Quiz! #VerifiedMatch"');
+}
+renderQ();
+</script>
+</body>
+</html>
