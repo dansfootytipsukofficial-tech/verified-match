@@ -1,0 +1,35 @@
+{
+  "name": "Verified Match",
+  "short_name": "VerifiedMatch",
+  "description": "Premium UK Dating Platform",
+  "start_url": "/verified-match/pages/login.html",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "orientation": "portrait",
+  "scope": "/verified-match/",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💜</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["social", "lifestyle"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Browse Matches",
+      "short_name": "Browse",
+      "url": "/verified-match/pages/browse.html",
+      "description": "Discover new matches"
+    },
+    {
+      "name": "Messages",
+      "short_name": "Messages",
+      "url": "/verified-match/pages/messages.html",
+      "description": "View your conversations"
+    }
+  ]
+}
