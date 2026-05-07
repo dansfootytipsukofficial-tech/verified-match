@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Date Ideas - Verified Match</title>
+<link rel="stylesheet" href="../css/dark-mode.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f9fa;min-height:100vh}
+.nav{background:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:sticky;top:0;z-index:100}
+.nav-logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:6px}
+.nav-links a{text-decoration:none;color:#666;font-size:0.85rem;padding:6px 12px;border-radius:20px;transition:all 0.2s}
+.nav-links a:hover,.nav-links a.active{background:linear-gradient(135deg,#43e97b,#38f9d7);color:white;-webkit-text-fill-color:white}
+.hero{background:linear-gradient(135deg,#43e97b,#38f9d7);padding:40px 20px;text-align:center;color:white}
+.hero h1{font-size:2rem;margin-bottom:8px}
+.hero p{opacity:0.9;font-size:1rem}
+.container{max-width:900px;margin:0 auto;padding:24px 20px}
+.filter-bar{background:white;border-radius:16px;padding:16px 20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.filter-bar label{font-size:0.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
+.filter-select{border:2px solid #e8e8e8;border-radius:10px;padding:8px 12px;font-size:0.85rem;outline:none;background:white;cursor:pointer;min-width:130px}
+.filter-select:focus{border-color:#43e97b}
+.shuffle-btn{margin-left:auto;background:linear-gradient(135deg,#43e97b,#38f9d7);color:white;border:none;border-radius:10px;padding:10px 18px;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.featured{background:linear-gradient(135deg,#43e97b,#38f9d7);border-radius:20px;padding:28px;color:white;margin-bottom:24px;display:flex;gap:20px;align-items:center;cursor:pointer;transition:transform 0.2s}
+.featured:hover{transform:scale(1.01)}
+.featured-emoji{font-size:4rem;flex-shrink:0}
+.featured-body h2{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.featured-body p{opacity:0.9;font-size:0.9rem;margin-bottom:10px;line-height:1.5}
+.featured-tags{display:flex;gap:8px;flex-wrap:wrap}
+.ftag{background:rgba(255,255,255,0.25);padding:3px 10px;border-radius:10px;font-size:0.75rem;font-weight:600}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:1.1rem;font-weight:700;color:#333}
+.ideas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px}
+.idea-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.07);transition:transform 0.2s,box-shadow 0.2s;cursor:pointer}
+.idea-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.13)}
+.idea-img{height:120px;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.idea-body{padding:16px}
+.idea-title{font-size:0.95rem;font-weight:700;color:#333;margin-bottom:6px}
+.idea-desc{font-size:0.82rem;color:#666;line-height:1.5;margin-bottom:10px}
+.idea-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.meta-chip{padding:3px 10px;border-radius:10px;font-size:0.72rem;font-weight:600}
+.chip-budget.free{background:#e8f5e9;color:#2e7d32}
+.chip-budget.cheap{background:#e3f2fd;color:#1565c0}
+.chip-budget.mid{background:#fff3e0;color:#e65100}
+.chip-budget.splash{background:#fce4ec;color:#c62828}
+.chip-type{background:#f3e5f5;color:#6a1b9a}
+.chip-vibe{background:#e8eaf6;color:#283593}
+.idea-actions{display:flex;gap:8px}
+.btn-save-idea{flex:1;padding:8px;background:#f0f0f0;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;cursor:pointer;transition:background 0.2s;color:#555}
+.btn-save-idea:hover,.btn-save-idea.saved{background:#e8f5e9;color:#2e7d32}
+.btn-plan{flex:2;padding:8px;background:linear-gradient(135deg,#43e97b,#38f9d7);color:white;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;cursor:pointer}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:12px 24px;border-radius:30px;font-size:0.9rem;opacity:0;transition:opacity 0.3s;z-index:1000;pointer-events:none}
+.toast.show{opacity:1}
+.saved-section{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.07);margin-bottom:24px}
+.saved-section h3{font-size:1rem;font-weight:700;color:#333;margin-bottom:12px}
+.saved-list{display:flex;gap:10px;flex-wrap:wrap}
+.saved-chip{padding:8px 14px;background:#f0fdf4;border:2px solid #86efac;border-radius:12px;font-size:0.82rem;font-weight:600;color:#166534;cursor:pointer}
+.empty-saved{font-size:0.85rem;color:#aaa}
+</style>
+</head>
+<body>
+<nav class="nav">
+<div class="nav-logo">💕 Verified Match</div>
+<div class="nav-links">
+<a href="dashboard.html">🏠</a>
+<a href="browse.html">💫 Browse</a>
+<a href="matches.html">💕 Matches</a>
+<a href="dates.html" class="active">📅 Date Ideas</a>
+</div>
+</nav>
+<div class="hero">
+<h1>📅 Date Ideas</h1>
+<p>Curated ideas for unforgettable first dates across the UK</p>
+</div>
+<div class="container">
+<div class="filter-bar">
+<label>Filter:</label>
+<select class="filter-select" id="fBudget" onchange="applyFilters()">
+<option value="">Any Budget</option>
+<option value="free">Free</option>
+<option value="cheap">£ Budget-friendly</option>
+<option value="mid">££ Mid-range</option>
+<option value="splash">£££ Splash out</option>
+</select>
+<select class="filter-select" id="fType" onchange="applyFilters()">
+<option value="">Any Type</option>
+<option value="outdoor">Outdoor</option>
+<option value="indoor">Indoor</option>
+<option value="food">Food & Drink</option>
+<option value="culture">Culture</option>
+<option value="active">Active</option>
+</select>
+<select class="filter-select" id="fVibe" onchange="applyFilters()">
+<option value="">Any Vibe</option>
+<option value="romantic">Romantic</option>
+<option value="fun">Fun</option>
+<option value="chill">Chill</option>
+<option value="adventurous">Adventurous</option>
+</select>
+<button class="shuffle-btn" onclick="shuffleIdeas()">&#x1F500; Shuffle</button>
+</div>
+<div class="featured">
+<div class="featured-emoji">🌅</div>
+<div class="featured-body">
+<h2>Sunset Picnic in Hyde Park</h2>
+<p>Pack a blanket, grab some food from M&S, and watch the sunset together. Simple, free, and genuinely magical for a first date.</p>
+<div class="featured-tags"><span class="ftag">Free</span><span class="ftag">Outdoor</span><span class="ftag">Romantic</span><span class="ftag">📍 London</span></div>
+</div>
+</div>
+<div class="saved-section" id="savedSection">
+<h3>♥️ Your Saved Ideas</h3>
+<div class="saved-list" id="savedList"><span class="empty-saved">Save ideas below to see them here</span></div>
+</div>
+<div class="section-header"><div class="section-title">🌟 All Date Ideas</div><span id="countLabel" style="font-size:0.85rem;color:#888"></span></div>
+<div class="ideas-grid" id="ideasGrid"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const session=JSON.parse(localStorage.getItem('vm_session')||'null');
+if(!session){window.location.href='login.html';}
+const ideas=[
+{id:1,emoji:'🎸',title:'Open Mic Night',desc:'Find a cosy pub hosting live music. Great conversation starter and very low pressure.',budget:'free',type:'indoor',vibe:'chill',loc:'Any city'},
+{id:2,emoji:'🐾',title:'Zoo or Wildlife Park',desc:'Marwell, Chester Zoo, or London Zoo make for playful, memorable dates with loads to talk about.',budget:'mid',type:'outdoor',vibe:'fun',loc:'UK-wide'},
+{id:3,emoji:'🍕',title:'Pizza Making Class',desc:'Book a class together, get hands-on and messy, then eat what you made. Brilliant fun.',budget:'mid',type:'indoor',vibe:'fun',loc:'Most cities'},
+{id:4,emoji:'⛵',title:'Kayaking on the Thames',desc:'Rent a kayak in Richmond or Oxford. Active, unique, and great for breaking the ice.',budget:'cheap',type:'active',vibe:'adventurous',loc:'London/Oxford'},
+{id:5,emoji:'🖥️',title:'Retro Cinema Night',desc:'The Prince Charles Cinema in London shows cult classics. Or find a local independent cinema.',budget:'cheap',type:'indoor',vibe:'chill',loc:'UK-wide'},
+{id:6,emoji:'🎨',title:'Tate Modern or Local Gallery',desc:'Free entry, fascinating conversation starters, and a coffee shop inside. Perfect combo.',budget:'free',type:'culture',vibe:'romantic',loc:'London/UK-wide'},
+{id:7,emoji:'🥊',title:'Crazy Golf',desc:'Swingers in London, Junkyard Golf in Manchester. Competitively flirty and always a laugh.',budget:'cheap',type:'active',vibe:'fun',loc:'Major cities'},
+{id:8,emoji:'🌊',title:'Coastal Walk & Fish & Chips',desc:'Brighton, Cornwall, Whitby — pick a seaside town for a walk and proper fish & chips.',budget:'cheap',type:'outdoor',vibe:'romantic',loc:'Coastal UK'},
+{id:9,emoji:'🍷',title:'Wine Tasting Evening',desc:'Book a structured wine tasting at a local bar. You learn something and the conversation flows.',budget:'mid',type:'food',vibe:'romantic',loc:'UK-wide'},
+{id:10,emoji:'🏓',title:'Table Tennis Bar',desc:'Bounce in London, Bat & Ball Manchester. Order drinks and play ping pong. Instantly fun.',budget:'cheap',type:'active',vibe:'fun',loc:'Major cities'},
+{id:11,emoji:'🌲',title:'Forest Bathing Walk',desc:'Visit a beautiful woodland like the New Forest or Peak District for a mindful, connecting walk.',budget:'free',type:'outdoor',vibe:'chill',loc:'UK-wide'},
+{id:12,emoji:'🎭',title:'Theatre Show',desc:'The West End or local fringe theatre. Dress up, enjoy a show, debrief over drinks after.',budget:'splash',type:'culture',vibe:'romantic',loc:'UK-wide'},
+{id:13,emoji:'🥘',title:'Street Food Market',desc:'Borough Market, Digbeth, Ouseburn — explore stalls, try everything, share plates.',budget:'cheap',type:'food',vibe:'adventurous',loc:'Major cities'},
+{id:14,emoji:'🚣',title:'Paddleboarding Lesson',desc:'Book a beginner paddleboarding session. Falling in together breaks all the ice instantly!',budget:'mid',type:'active',vibe:'adventurous',loc:'Coastal/rivers'},
+{id:15,emoji:'☕',title:'Speciality Coffee Crawl',desc:'Visit 3 indie coffee shops in a neighbourhood. Compare drinks, explore the area, zero pressure.',budget:'cheap',type:'food',vibe:'chill',loc:'UK-wide'},
+{id:16,emoji:'🎃',title:'Escape Room',desc:'Work together to solve puzzles under pressure. Tells you a lot about a person — brilliantly.',budget:'mid',type:'indoor',vibe:'adventurous',loc:'UK-wide'},
+{id:17,emoji:'🎙️',title:'Karaoke Bar',desc:'If you\'re both up for it, karaoke is an absolute laugh and totally unforgettable.',budget:'cheap',type:'indoor',vibe:'fun',loc:'UK-wide'},
+{id:18,emoji:'🌌',title:'Stargazing',desc:'Drive to a dark sky area, bring hot chocolate and a blanket. Deeply romantic.',budget:'free',type:'outdoor',vibe:'romantic',loc:'Rural UK'},
+];
+let saved=JSON.parse(localStorage.getItem('vm_date_saved')||'[]');
+let filtered=[...ideas];
+function applyFilters(){
+const b=document.getElementById('fBudget').value;
+const t=document.getElementById('fType').value;
+const v=document.getElementById('fVibe').value;
+filtered=ideas.filter(i=>{
+if(b&&i.budget!==b)return false;
+if(t&&i.type!==t)return false;
+if(v&&i.vibe!==v)return false;
+return true;
+});
+render();
+}
+function shuffleIdeas(){
+filtered=[...filtered].sort(()=>Math.random()-0.5);
+render();
+}
+function render(){
+const grid=document.getElementById('ideasGrid');
+document.getElementById('countLabel').textContent=filtered.length+' ideas';
+if(filtered.length===0){grid.innerHTML='<div style="text-align:center;padding:40px;color:#aaa;grid-column:1/-1">😕 No ideas match. Try different filters.</div>';return;}
+grid.innerHTML=filtered.map(i=>{
+const isSaved=saved.includes(i.id);
+const budgetLabels={free:'Free',cheap:'£ Budget',mid:'££ Mid',splash:'£££ Splash'};
+const bg={outdoor:'#e8f5e9',indoor:'#e3f2fd',food:'#fff3e0',culture:'#f3e5f5',active:'#fce4ec'};
+return `<div class="idea-card">
+<div class="idea-img" style="background:${bg[i.type]||'#f0f0f0'}">${i.emoji}</div>
+<div class="idea-body">
+<div class="idea-title">${i.title}</div>
+<div class="idea-desc">${i.desc}</div>
+<div class="idea-meta">
+<span class="meta-chip chip-budget ${i.budget}">${budgetLabels[i.budget]}</span>
+<span class="meta-chip chip-type">${i.type}</span>
+<span class="meta-chip chip-vibe">${i.vibe}</span>
+</div>
+<div style="font-size:0.75rem;color:#999;margin-bottom:10px">📍 ${i.loc}</div>
+<div class="idea-actions">
+<button class="btn-save-idea${isSaved?' saved':''}" onclick="toggleSave(${i.id})">${isSaved?'♥️ Saved':'♡ Save'}</button>
+<button class="btn-plan" onclick="planDate('${i.title}')">Plan This Date</button>
+</div>
+</div>
+</div>`;
+}).join('');
+renderSaved();
+}
+function renderSaved(){
+const list=document.getElementById('savedList');
+const savedIdeas=ideas.filter(i=>saved.includes(i.id));
+if(savedIdeas.length===0){list.innerHTML='<span class="empty-saved">Save ideas below to see them here</span>';return;}
+list.innerHTML=savedIdeas.map(i=>`<div class="saved-chip" onclick="planDate('${i.title}')">${i.emoji} ${i.title}</div>`).join('');
+}
+function toggleSave(id){
+if(saved.includes(id)){saved=saved.filter(x=>x!==id);}else{saved.push(id);}
+localStorage.setItem('vm_date_saved',JSON.stringify(saved));
+render();
+}
+function planDate(title){
+showToast('📅 Added "'+title+'" to your plans! Share it with your match in Messages.');
+}
+function showToast(msg){
+const t=document.getElementById('toast');
+t.textContent=msg;t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),3500);
+}
+render();
+</script>
+</body>
+</html>
