@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search - Verified Match</title>
+<link rel="stylesheet" href="../css/dark-mode.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f9fa;min-height:100vh}
+.nav{background:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:sticky;top:0;z-index:100}
+.nav-logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:6px}
+.nav-links a{text-decoration:none;color:#666;font-size:0.85rem;padding:6px 12px;border-radius:20px;transition:all 0.2s}
+.nav-links a:hover,.nav-links a.active{background:linear-gradient(135deg,#667eea,#764ba2);color:white;-webkit-text-fill-color:white}
+.page-header{background:linear-gradient(135deg,#667eea,#764ba2);padding:28px 20px;text-align:center;color:white}
+.page-header h1{font-size:1.6rem;margin-bottom:6px}
+.page-header p{opacity:0.9;font-size:0.95rem}
+.search-container{max-width:900px;margin:0 auto;padding:20px}
+.search-bar-wrap{background:white;border-radius:16px;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:20px;display:flex;gap:12px;align-items:center}
+.search-input{flex:1;border:2px solid #e8e8e8;border-radius:12px;padding:12px 16px;font-size:1rem;outline:none;transition:border 0.2s}
+.search-input:focus{border-color:#667eea}
+.search-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;padding:12px 24px;font-size:1rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.filters-panel{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:20px}
+.filters-panel h3{font-size:1rem;font-weight:700;color:#333;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.filter-group label{display:block;font-size:0.8rem;font-weight:600;color:#666;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.filter-group select,.filter-group input[type=range]{width:100%;border:2px solid #e8e8e8;border-radius:8px;padding:8px 12px;font-size:0.9rem;outline:none;transition:border 0.2s;background:white}
+.filter-group select:focus{border-color:#667eea}
+.range-display{font-size:0.85rem;color:#667eea;font-weight:600;text-align:center;margin-top:4px}
+.interests-filter{margin-top:16px}
+.interests-filter label{display:block;font-size:0.8rem;font-weight:600;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
+.interest-tags{display:flex;flex-wrap:wrap;gap:8px}
+.interest-tag{padding:6px 14px;border:2px solid #e8e8e8;border-radius:20px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;user-select:none;color:#666}
+.interest-tag.selected{border-color:#667eea;background:linear-gradient(135deg,#667eea,#764ba2);color:white}
+.filter-actions{display:flex;gap:10px;margin-top:16px}
+.btn-apply{flex:1;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;padding:12px;font-size:0.95rem;font-weight:600;cursor:pointer}
+.btn-reset{padding:12px 20px;border:2px solid #e8e8e8;background:white;border-radius:10px;font-size:0.95rem;cursor:pointer;color:#666}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.results-count{font-size:0.9rem;color:#666}
+.sort-select{border:2px solid #e8e8e8;border-radius:8px;padding:6px 12px;font-size:0.85rem;outline:none;background:white}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.profile-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:transform 0.2s,box-shadow 0.2s;cursor:pointer}
+.profile-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.15)}
+.card-photo{height:200px;background:linear-gradient(135deg,#667eea,#764ba2);position:relative;display:flex;align-items:flex-end}
+.card-photo .avatar{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:4rem}
+.card-badge{position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.9);border-radius:12px;padding:3px 8px;font-size:0.7rem;font-weight:700;color:#333}
+.card-badge.verified{color:#667eea}
+.card-badge.premium{color:#f093fb}
+.card-distance{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.5);color:white;border-radius:10px;padding:3px 8px;font-size:0.75rem}
+.card-body{padding:14px}
+.card-name{font-size:1rem;font-weight:700;color:#333;margin-bottom:4px}
+.card-meta{font-size:0.82rem;color:#888;margin-bottom:8px}
+.card-interests{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.tag{padding:2px 8px;background:#f0f0f0;border-radius:10px;font-size:0.72rem;color:#555}
+.card-actions{display:flex;gap:8px}
+.btn-like{flex:1;background:linear-gradient(135deg,#f093fb,#f5576c);color:white;border:none;border-radius:10px;padding:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:opacity 0.2s}
+.btn-like:hover{opacity:0.85}
+.btn-msg{flex:1;background:#f0f0f0;color:#333;border:none;border-radius:10px;padding:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:background 0.2s}
+.btn-msg:hover{background:#e0e0e0}
+.no-results{text-align:center;padding:60px 20px;color:#888}
+.no-results .icon{font-size:3rem;margin-bottom:12px}
+</style>
+</head>
+<body>
+<nav class="nav">
+<div class="nav-logo">💕 Verified Match</div>
+<div class="nav-links">
+<a href="dashboard.html">🏠</a>
+<a href="browse.html">💫 Browse</a>
+<a href="search.html" class="active">🔍 Search</a>
+<a href="matches.html">💕 Matches</a>
+<a href="messages.html">💬 Messages</a>
+</div>
+</nav>
+<div class="page-header">
+<h1>🔍 Find Your Match</h1>
+<p>Search and filter to discover people who share your vibe</p>
+</div>
+<div class="search-container">
+<div class="search-bar-wrap">
+<input class="search-input" type="text" id="searchInput" placeholder="Search by name, location, interests..." oninput="filterResults()">
+<button class="search-btn" onclick="filterResults()">Search</button>
+</div>
+<div class="filters-panel">
+<h3>🎛️ Filters</h3>
+<div class="filter-grid">
+<div class="filter-group">
+<label>Gender</label>
+<select id="filterGender" onchange="filterResults()">
+<option value="">Any</option>
+<option value="woman">Women</option>
+<option value="man">Men</option>
+<option value="nonbinary">Non-binary</option>
+</select>
+</div>
+<div class="filter-group">
+<label>Age Range</label>
+<input type="range" id="filterAge" min="18" max="60" value="40" oninput="updateAge(this.value);filterResults()">
+<div class="range-display" id="ageDisplay">Up to 40</div>
+</div>
+<div class="filter-group">
+<label>Distance</label>
+<input type="range" id="filterDist" min="5" max="100" value="50" oninput="updateDist(this.value);filterResults()">
+<div class="range-display" id="distDisplay">Within 50 miles</div>
+</div>
+<div class="filter-group">
+<label>Verified Only</label>
+<select id="filterVerified" onchange="filterResults()">
+<option value="">All profiles</option>
+<option value="yes">Verified only ✓</option>
+</select>
+</div>
+</div>
+<div class="interests-filter">
+<label>Interests</label>
+<div class="interest-tags" id="interestTags">
+</div>
+</div>
+<div class="filter-actions">
+<button class="btn-apply" onclick="filterResults()">Apply Filters</button>
+<button class="btn-reset" onclick="resetFilters()">Reset</button>
+</div>
+</div>
+<div class="results-header">
+<span class="results-count" id="resultsCount">Showing 12 profiles</span>
+<select class="sort-select" id="sortBy" onchange="filterResults()">
+<option value="match">Best Match</option>
+<option value="distance">Nearest</option>
+<option value="newest">Newest</option>
+<option value="active">Recently Active</option>
+</select>
+</div>
+<div class="results-grid" id="resultsGrid"></div>
+</div>
+<script>
+const session=JSON.parse(localStorage.getItem('vm_session')||'null');
+if(!session){window.location.href='login.html';}
+const interests=['Travel','Music','Fitness','Cooking','Art','Gaming','Reading','Hiking','Photography','Fashion','Films','Yoga'];
+const allProfiles=[
+{id:1,name:'Sophie',age:26,gender:'woman',location:'London',dist:3,interests:['Travel','Music','Art'],verified:true,premium:false,emoji:'👩',match:95,active:'2m ago'},
+{id:2,name:'Emma',age:29,gender:'woman',location:'Manchester',dist:12,interests:['Fitness','Yoga','Hiking'],verified:true,premium:true,emoji:'👱‍♀️',match:91,active:'5m ago'},
+{id:3,name:'Olivia',age:24,gender:'woman',location:'Birmingham',dist:18,interests:['Gaming','Films','Music'],verified:true,premium:false,emoji:'🧕',match:88,active:'12m ago'},
+{id:4,name:'Chloe',age:31,gender:'woman',location:'Leeds',dist:25,interests:['Cooking','Reading','Art'],verified:false,premium:false,emoji:'👩‍🦰',match:84,active:'1h ago'},
+{id:5,name:'Ava',age:27,gender:'woman',location:'Bristol',dist:34,interests:['Photography','Travel','Fashion'],verified:true,premium:true,emoji:'👩‍🦱',match:79,active:'2h ago'},
+{id:6,name:'Isla',age:23,gender:'woman',location:'Edinburgh',dist:40,interests:['Yoga','Reading','Cooking'],verified:true,premium:false,emoji:'👧',match:76,active:'3h ago'},
+{id:7,name:'James',age:28,gender:'man',location:'London',dist:5,interests:['Fitness','Gaming','Travel'],verified:true,premium:false,emoji:'👨',match:82,active:'30m ago'},
+{id:8,name:'Liam',age:32,gender:'man',location:'Liverpool',dist:22,interests:['Music','Films','Art'],verified:true,premium:true,emoji:'👱',match:78,active:'1h ago'},
+{id:9,name:'Noah',age:25,gender:'man',location:'Sheffield',dist:31,interests:['Hiking','Photography','Fitness'],verified:false,premium:false,emoji:'🧔',match:71,active:'4h ago'},
+{id:10,name:'Alex',age:30,gender:'nonbinary',location:'Brighton',dist:15,interests:['Art','Fashion','Music'],verified:true,premium:false,emoji:'🧑',match:86,active:'45m ago'},
+{id:11,name:'Taylor',age:27,gender:'nonbinary',location:'Cardiff',dist:28,interests:['Gaming','Reading','Cooking'],verified:true,premium:true,emoji:'🧑‍🦰',match:80,active:'2h ago'},
+{id:12,name:'Jordan',age:29,gender:'nonbinary',location:'Newcastle',dist:45,interests:['Travel','Yoga','Photography'],verified:false,premium:false,emoji:'🧑‍🦱',match:68,active:'6h ago'}
+];
+let selectedInterests=[];
+function init(){
+document.getElementById('interestTags').innerHTML=interests.map(i=>`<span class="interest-tag" onclick="toggleInterest('${i}')">${i}</span>`).join('');
+renderProfiles(allProfiles);
+}
+function toggleInterest(i){
+if(selectedInterests.includes(i)){selectedInterests=selectedInterests.filter(x=>x!==i);}else{selectedInterests.push(i);}
+document.querySelectorAll('.interest-tag').forEach(el=>{if(el.textContent===i)el.classList.toggle('selected');});
+filterResults();
+}
+function updateAge(v){document.getElementById('ageDisplay').textContent='Up to '+v;}
+function updateDist(v){document.getElementById('distDisplay').textContent='Within '+v+' miles';}
+function filterResults(){
+const q=document.getElementById('searchInput').value.toLowerCase();
+const gender=document.getElementById('filterGender').value;
+const maxAge=parseInt(document.getElementById('filterAge').value);
+const maxDist=parseInt(document.getElementById('filterDist').value);
+const verifiedOnly=document.getElementById('filterVerified').value==='yes';
+const sort=document.getElementById('sortBy').value;
+let results=allProfiles.filter(p=>{
+if(gender&&p.gender!==gender)return false;
+if(p.age>maxAge)return false;
+if(p.dist>maxDist)return false;
+if(verifiedOnly&&!p.verified)return false;
+if(selectedInterests.length>0&&!selectedInterests.some(i=>p.interests.includes(i)))return false;
+if(q&&!p.name.toLowerCase().includes(q)&&!p.location.toLowerCase().includes(q)&&!p.interests.some(i=>i.toLowerCase().includes(q)))return false;
+return true;
+});
+if(sort==='distance')results.sort((a,b)=>a.dist-b.dist);
+else if(sort==='newest')results.sort(()=>Math.random()-0.5);
+else if(sort==='match')results.sort((a,b)=>b.match-a.match);
+document.getElementById('resultsCount').textContent='Showing '+results.length+' profile'+(results.length!==1?'s':'');
+renderProfiles(results);
+}
+function renderProfiles(list){
+const grid=document.getElementById('resultsGrid');
+if(list.length===0){grid.innerHTML='<div class="no-results"><div class="icon">😕</div><p>No profiles match your filters.</p><p style="margin-top:8px;font-size:0.85rem">Try adjusting your search criteria</p></div>';return;}
+grid.innerHTML=list.map(p=>`
+<div class="profile-card">
+<div class="card-photo" style="background:linear-gradient(135deg,${randomGrad()})">
+<div class="avatar">${p.emoji}</div>
+${p.verified?'<span class="card-badge verified">✓ Verified</span>':''}
+${p.premium?'<span class="card-badge premium" style="top:10px;right:10px;margin-top:24px">👑 Premium</span>':''}
+<span class="card-distance">📍 ${p.dist} miles</span>
+</div>
+<div class="card-body">
+<div class="card-name">${p.name}, ${p.age} <span style="font-size:0.75rem;color:#667eea;font-weight:600">${p.match}% match</span></div>
+<div class="card-meta">📍 ${p.location} · 🕐 ${p.active}</div>
+<div class="card-interests">${p.interests.slice(0,3).map(i=>`<span class="tag">${i}</span>`).join('')}</div>
+<div class="card-actions">
+<button class="btn-like" onclick="likeProfile(${p.id},'${p.name}')">💖 Like</button>
+<button class="btn-msg" onclick="window.location.href='messages.html'">💬 Message</button>
+</div>
+</div>
+</div>`).join('');
+}
+function randomGrad(){
+const grads=[['#667eea','#764ba2'],['#f093fb','#f5576c'],['#4facfe','#00f2fe'],['#43e97b','#38f9d7'],['#fa709a','#fee140'],['#a18cd1','#fbc2eb']];
+return grads[Math.floor(Math.random()*grads.length)].join(',');
+}
+function likeProfile(id,name){
+const likes=JSON.parse(localStorage.getItem('vm_likes')||'[]');
+if(!likes.includes(id)){likes.push(id);localStorage.setItem('vm_likes',JSON.stringify(likes));}
+alert('💖 You liked '+name+'!');
+}
+function resetFilters(){
+document.getElementById('searchInput').value='';
+document.getElementById('filterGender').value='';
+document.getElementById('filterAge').value=40;
+document.getElementById('filterDist').value=50;
+document.getElementById('filterVerified').value='';
+document.getElementById('ageDisplay').textContent='Up to 40';
+document.getElementById('distDisplay').textContent='Within 50 miles';
+selectedInterests=[];
+document.querySelectorAll('.interest-tag').forEach(el=>el.classList.remove('selected'));
+renderProfiles(allProfiles);
+}
+init();
+</script>
+</body>
+</html>
