@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ice Breakers - Verified Match</title>
+<link rel="stylesheet" href="../css/dark-mode.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f9fa;min-height:100vh}
+.nav{background:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.08);position:sticky;top:0;z-index:100}
+.nav-logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:6px}
+.nav-links a{text-decoration:none;color:#666;font-size:0.85rem;padding:6px 12px;border-radius:20px;transition:all 0.2s}
+.nav-links a:hover,.nav-links a.active{background:linear-gradient(135deg,#667eea,#764ba2);color:white;-webkit-text-fill-color:white}
+.hero{background:linear-gradient(135deg,#f093fb,#f5576c);padding:40px 20px;text-align:center;color:white}
+.hero h1{font-size:2rem;margin-bottom:8px}
+.hero p{opacity:0.9;font-size:1rem;margin-bottom:4px}
+.hero .sub{font-size:0.85rem;opacity:0.75}
+.container{max-width:800px;margin:0 auto;padding:24px 20px}
+.section-title{font-size:1.1rem;font-weight:700;color:#333;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.categories{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.cat-btn{padding:8px 18px;border:2px solid #e8e8e8;border-radius:20px;background:white;font-size:0.85rem;cursor:pointer;transition:all 0.2s;color:#666;font-weight:500}
+.cat-btn.active,.cat-btn:hover{background:linear-gradient(135deg,#f093fb,#f5576c);border-color:transparent;color:white}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:32px}
+.ib-card{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:transform 0.2s,box-shadow 0.2s;position:relative;overflow:hidden}
+.ib-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(135deg,#f093fb,#f5576c)}
+.ib-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.12)}
+.ib-emoji{font-size:2rem;margin-bottom:10px;display:block}
+.ib-text{font-size:1rem;color:#333;font-weight:500;line-height:1.5;margin-bottom:14px}
+.ib-category{font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px}
+.ib-actions{display:flex;gap:8px}
+.btn-send{flex:1;background:linear-gradient(135deg,#f093fb,#f5576c);color:white;border:none;border-radius:10px;padding:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:opacity 0.2s}
+.btn-send:hover{opacity:0.85}
+.btn-save{background:#f0f0f0;border:none;border-radius:10px;padding:10px 14px;font-size:0.85rem;cursor:pointer;transition:background 0.2s}
+.btn-save:hover{background:#e0e0e0}
+.btn-save.saved{background:#fff0f5;color:#f5576c}
+.sent-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:12px 24px;border-radius:30px;font-size:0.9rem;font-weight:500;opacity:0;transition:opacity 0.3s;z-index:1000;pointer-events:none}
+.sent-toast.show{opacity:1}
+.custom-section{background:white;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:24px}
+.custom-section h3{font-size:1rem;font-weight:700;color:#333;margin-bottom:12px}
+.custom-input{width:100%;border:2px solid #e8e8e8;border-radius:12px;padding:14px;font-size:0.95rem;outline:none;resize:vertical;min-height:80px;transition:border 0.2s;font-family:inherit}
+.custom-input:focus{border-color:#f093fb}
+.custom-actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn-custom-send{background:linear-gradient(135deg,#f093fb,#f5576c);color:white;border:none;border-radius:10px;padding:10px 20px;font-size:0.9rem;font-weight:600;cursor:pointer}
+.btn-generate{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;padding:10px 20px;font-size:0.9rem;font-weight:600;cursor:pointer}
+.match-select{flex:1;min-width:140px;border:2px solid #e8e8e8;border-radius:10px;padding:10px 12px;font-size:0.9rem;outline:none;background:white}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.stat-box{background:white;border-radius:14px;padding:16px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.stat-box .num{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-box .lbl{font-size:0.75rem;color:#888;margin-top:2px}
+</style>
+</head>
+<body>
+<nav class="nav">
+<div class="nav-logo">💕 Verified Match</div>
+<div class="nav-links">
+<a href="dashboard.html">🏠</a>
+<a href="browse.html">💫 Browse</a>
+<a href="matches.html">💕 Matches</a>
+<a href="messages.html">💬 Messages</a>
+<a href="icebreakers.html" class="active">❄️ Ice Breakers</a>
+</div>
+</nav>
+<div class="hero">
+<h1>❄️ Ice Breakers</h1>
+<p>Break the awkward silence with a perfect opener</p>
+<div class="sub">Curated conversation starters that actually work</div>
+</div>
+<div class="container">
+<div class="stats-row">
+<div class="stat-box"><div class="num">247</div><div class="lbl">Sent Today</div></div>
+<div class="stat-box"><div class="num">68%</div><div class="lbl">Reply Rate</div></div>
+<div class="stat-box"><div class="num">94</div><div class="lbl">New Chats</div></div>
+</div>
+<div class="section-title">🎯 Browse by Category</div>
+<div class="categories">
+<button class="cat-btn active" onclick="filterCat('all',this)">All</button>
+<button class="cat-btn" onclick="filterCat('fun',this)">😂 Fun</button>
+<button class="cat-btn" onclick="filterCat('deep',this)">💭 Deep</button>
+<button class="cat-btn" onclick="filterCat('travel',this)">✈️ Travel</button>
+<button class="cat-btn" onclick="filterCat('food',this)">🍕 Food</button>
+<button class="cat-btn" onclick="filterCat('music',this)">🎵 Music</button>
+<button class="cat-btn" onclick="filterCat('movies',this)">🎬 Movies</button>
+<button class="cat-btn" onclick="filterCat('adventure',this)">🏔️ Adventure</button>
+</div>
+<div class="cards-grid" id="cardsGrid"></div>
+<div class="custom-section">
+<h3>✏️ Write Your Own Ice Breaker</h3>
+<textarea class="custom-input" id="customMsg" placeholder="Type your own conversation starter..."></textarea>
+<div class="custom-actions">
+<select class="match-select" id="matchSelect">
+<option value="">Select a match...</option>
+<option value="Sophie">Sophie, 26</option>
+<option value="Emma">Emma, 29</option>
+<option value="Olivia">Olivia, 24</option>
+<option value="Alex">Alex, 30</option>
+<option value="James">James, 28</option>
+</select>
+<button class="btn-generate" onclick="generateMsg()">&#x2728; AI Generate</button>
+<button class="btn-custom-send" onclick="sendCustom()">Send →</button>
+</div>
+</div>
+</div>
+<div class="sent-toast" id="toast"></div>
+<script>
+const session=JSON.parse(localStorage.getItem('vm_session')||'null');
+if(!session){window.location.href='login.html';}
+const breakers=[
+{id:1,emoji:'🌍',text:'If you could live anywhere in the world for a year, where would you go and why?',cat:'travel'},
+{id:2,emoji:'🍕',text:'What\'s the most adventurous thing you\'ve ever eaten?',cat:'food'},
+{id:3,emoji:'😂',text:'What\'s your go-to karaoke song, even if you\'d never actually sing it?',cat:'fun'},
+{id:4,emoji:'🎬',text:'What movie could you watch on repeat and never get tired of?',cat:'movies'},
+{id:5,emoji:'💭',text:'What\'s one thing most people are surprised to learn about you?',cat:'deep'},
+{id:6,emoji:'🎵',text:'What song perfectly describes your current mood?',cat:'music'},
+{id:7,emoji:'✈️',text:'Window or aisle seat? And what\'s your ideal travel destination?',cat:'travel'},
+{id:8,emoji:'😂',text:'If your life was a sitcom, what would it be called?',cat:'fun'},
+{id:9,emoji:'🍕',text:'Coffee or tea? And what\'s your ultimate comfort food?',cat:'food'},
+{id:10,emoji:'💭',text:'What\'s something you\'ve been wanting to try but haven\'t gotten around to yet?',cat:'deep'},
+{id:11,emoji:'🎵',text:'What\'s the last concert you went to, or which artist would you most want to see live?',cat:'music'},
+{id:12,emoji:'🎬',text:'What\'s the most underrated movie you\'ve ever seen?',cat:'movies'},
+{id:13,emoji:'🏔️',text:'Are you more of a mountains or beach person? What\'s your dream adventure?',cat:'adventure'},
+{id:14,emoji:'😂',text:'What\'s a completely useless talent you\'re secretly proud of?',cat:'fun'},
+{id:15,emoji:'💭',text:'What does your perfect Sunday look like?',cat:'deep'},
+{id:16,emoji:'🏔️',text:'Would you rather explore the deep ocean or outer space?',cat:'adventure'},
+];
+let saved=JSON.parse(localStorage.getItem('vm_ib_saved')||'[]');
+let currentCat='all';
+function filterCat(cat,btn){
+currentCat=cat;
+document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+renderCards();
+}
+function renderCards(){
+const grid=document.getElementById('cardsGrid');
+const list=currentCat==='all'?breakers:breakers.filter(b=>b.cat===currentCat);
+grid.innerHTML=list.map(b=>{
+const isSaved=saved.includes(b.id);
+return `<div class="ib-card">
+<span class="ib-emoji">${b.emoji}</span>
+<div class="ib-text">&ldquo;${b.text}&rdquo;</div>
+<div class="ib-category">${b.cat}</div>
+<div class="ib-actions">
+<button class="btn-send" onclick="sendBreaker(${b.id})">Send to Match →</button>
+<button class="btn-save ${isSaved?'saved':''} " id="save-${b.id}" onclick="toggleSave(${b.id})">${isSaved?'♥️':'🧡'}</button>
+</div>
+</div>`;
+}).join('');
+}
+function sendBreaker(id){
+const b=breakers.find(x=>x.id===id);
+showToast('💬 Ice breaker sent! Check Messages for replies.');
+}
+function toggleSave(id){
+if(saved.includes(id)){saved=saved.filter(x=>x!==id);}else{saved.push(id);}
+localStorage.setItem('vm_ib_saved',JSON.stringify(saved));
+renderCards();
+}
+function sendCustom(){
+const msg=document.getElementById('customMsg').value.trim();
+const match=document.getElementById('matchSelect').value;
+if(!msg){alert('Please type a message first!');return;}
+if(!match){alert('Please select a match to send to!');return;}
+showToast('💬 Sent to '+match+'! Fingers crossed 🤞');
+document.getElementById('customMsg').value='';
+}
+const aiMessages=[
+'What\'s something that made you genuinely happy this week?',
+'If we went on a road trip tomorrow, where would you want to go?',
+'What\'s your guilty pleasure TV show?',
+'If you could master any skill overnight, what would it be?',
+'What\'s the best spontaneous thing you\'ve ever done?',
+];
+function generateMsg(){
+const msg=aiMessages[Math.floor(Math.random()*aiMessages.length)];
+document.getElementById('customMsg').value=msg;
+}
+function showToast(msg){
+const t=document.getElementById('toast');
+t.textContent=msg;
+t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),3000);
+}
+renderCards();
+</script>
+</body>
+</html>
