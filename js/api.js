@@ -1,25 +1,34 @@
-// VERIFIED MATCH - Comprehensive API Integration Layer
-// Frontend to Backend Communication Service
-// Supports all dating platform features with error handling and token management
+// ==============================================
+// VERIFIED MATCH – API Service Layer (Supabase)
+// Replaces REST endpoints with Supabase-backed calls
+// Maintains same API surface for existing code
+// ==============================================
 
+/**
+ * API – Unified service layer using dbService (Supabase-backed)
+ * Replaces fetch() calls with direct dbService calls
+ * Keeps backward-compatible method signatures
+ */
 const API = {
-  // Configuration
-  BASE_URL: 'http://localhost:5000/api', // Change to your deployed backend URL
+  // Configuration – BASE_URL no longer needed with Supabase
+  BASE_URL: null,
   AUTH_TOKEN: localStorage.getItem('auth_token') || null,
 
   // ==================== AUTH ENDPOINTS ====================
   auth: {
     register: async (email, password, username, gender, age, bio) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, username, gender, age, bio })
-        });
-        const data = await response.json();
-        if (data.token) {
-          API.AUTH_TOKEN = data.token;
-          localStorage.setItem('auth_token', data.token);
+        // Create user in Supabase auth
+        const { data, error } = await window.SupabaseService.auth
+          .signUp({ email, password, options: { data: { username, gender, age, bio } } });
+        if (error) {
+          console.error('Register error:', error);
+          return { error: error.message };
+        }
+        if (data.session) {
+          API.AUTH_TOKEN = data.session.access_token;
+          localStorage.setItem('auth_token', data.session.access_token);
+          localStorage.setItem('user_id', data.user.id);
         }
         return data;
       } catch (error) {
@@ -30,16 +39,16 @@ const API = {
 
     login: async (email, password) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await response.json();
-        if (data.token) {
-          API.AUTH_TOKEN = data.token;
-          localStorage.setItem('auth_token', data.token);
-          localStorage.setItem('user_id', data.userId);
+        const { data, error } = await window.SupabaseService.auth
+          .signInWithPassword({ email, password });
+        if (error) {
+          console.error('Login error:', error);
+          return { error: error.message };
+        }
+        if (data.session) {
+          API.AUTH_TOKEN = data.session.access_token;
+          localStorage.setItem('auth_token', data.session.access_token);
+          localStorage.setItem('user_id', data.user.id);
         }
         return data;
       } catch (error) {
@@ -49,22 +58,37 @@ const API = {
     },
 
     logout: () => {
-      API.AUTH_TOKEN = null;
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_id');
-      window.location.href = '/pages/index.html';
+      window.SupabaseService.auth.signOut().then(() => {
+        API.AUTH_TOKEN = null;
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_id');
+        window.location.href = '/pages/index.html';
+      });
     },
 
     verifyEmail: async (token) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/auth/verify/${token}`, {
-          method: 'POST'
-        });
-        return await response.json();
+        const { data, error } = await window.SupabaseService.auth
+          .verifyOtp({ token_hash: token, type: 'email' });
+        if (error) return { error: error.message };
+        return data;
       } catch (error) {
         console.error('Verify email error:', error);
         return { error: error.message };
       }
+    },
+
+    getCurrentUser: async () => {
+      const { data, error } = await window.SupabaseService.auth.getUser();
+      if (error) return null;
+      return data.user;
+    },
+
+    resetPassword: async (email) => {
+      const { error } = await window.SupabaseService.auth
+        .resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password.html` });
+      if (error) return { error: error.message };
+      return { success: true };
     }
   },
 
@@ -72,25 +96,18 @@ const API = {
   profiles: {
     getProfile: async (userId) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/profiles/${userId}`);
-        return await response.json();
+        return await window.dbService.getProfile(userId);
       } catch (error) {
         console.error('Get profile error:', error);
         return { error: error.message };
       }
     },
 
-    updateProfile: async (bio, location, interests, photos) => {
+    updateProfile: async (bio, location, interests, photos, userId) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/profiles/update`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API.AUTH_TOKEN}`
-          },
-          body: JSON.stringify({ bio, location, interests, photos })
-        });
-        return await response.json();
+        const targetId = userId || API.getUserId();
+        const updates = { bio, location, interests, photos };
+        return await window.dbService.updateProfile(targetId, updates);
       } catch (error) {
         console.error('Update profile error:', error);
         return { error: error.message };
@@ -99,15 +116,21 @@ const API = {
 
     searchUsers: async (query, gender, ageMin, ageMax, location) => {
       try {
-        const params = new URLSearchParams();
-        if (query) params.append('q', query);
-        if (gender) params.append('gender', gender);
-        if (ageMin) params.append('ageMin', ageMin);
-        if (ageMax) params.append('ageMax', ageMax);
-        if (location) params.append('location', location);
-
-        const response = await fetch(`${API.BASE_URL}/profiles/search/query?${params}`);
-        return await response.json();
+        const { data, error } = await window.SupabaseService
+          .select('profiles');
+        if (error) throw error;
+        // Filter locally
+        let results = data || [];
+        if (query) results = results.filter(p =>
+          (p.username || '').toLowerCase().includes(query.toLowerCase())
+        );
+        if (gender) results = results.filter(p => p.gender === gender);
+        if (ageMin) results = results.filter(p => p.age >= parseInt(ageMin));
+        if (ageMax) results = results.filter(p => p.age <= parseInt(ageMax));
+        if (location) results = results.filter(p =>
+          (p.location || '').toLowerCase().includes(location.toLowerCase())
+        );
+        return results;
       } catch (error) {
         console.error('Search users error:', error);
         return { error: error.message };
@@ -116,8 +139,14 @@ const API = {
 
     getStats: async (userId) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/profiles/${userId}/stats`);
-        return await response.json();
+        const profile = await window.dbService.getProfile(userId);
+        const matches = await window.dbService.getMatches(userId);
+        return {
+          profileViews: profile?.views || 0,
+          matchesCount: matches.length,
+          messagesSent: 0,
+          likesReceived: 0
+        };
       } catch (error) {
         console.error('Get stats error:', error);
         return { error: error.message };
@@ -129,10 +158,13 @@ const API = {
   matches: {
     getPotentialMatches: async () => {
       try {
-        const response = await fetch(`${API.BASE_URL}/matches/potential`, {
-          headers: { 'Authorization': `Bearer ${API.AUTH_TOKEN}` }
-        });
-        return await response.json();
+        const currentUserId = API.getUserId();
+        const existingMatches = await window.dbService.getMatches(currentUserId);
+        const matchedIds = new Set(existingMatches.map(m =>
+          m.userId === currentUserId ? m.matchId : m.userId
+        ));
+        const allUsers = await window.dbService.getAllUsers();
+        return allUsers.filter(u => u.id !== currentUserId && !matchedIds.has(u.id));
       } catch (error) {
         console.error('Get potential matches error:', error);
         return { error: error.message };
@@ -141,15 +173,17 @@ const API = {
 
     createMatch: async (matchedUserId, action) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/matches/create`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API.AUTH_TOKEN}`
-          },
-          body: JSON.stringify({ matched_user_id: matchedUserId, action })
-        });
-        return await response.json();
+        const currentUserId = API.getUserId();
+        if (action === 'like') {
+          const match = {
+            userId: currentUserId,
+            matchId: matchedUserId,
+            status: 'pending',
+            createdAt: new Date().toISOString()
+          };
+          return await window.dbService.addMatch(match);
+        }
+        return { error: 'Invalid action' };
       } catch (error) {
         console.error('Create match error:', error);
         return { error: error.message };
@@ -158,10 +192,8 @@ const API = {
 
     getMyMatches: async () => {
       try {
-        const response = await fetch(`${API.BASE_URL}/matches/my-matches`, {
-          headers: { 'Authorization': `Bearer ${API.AUTH_TOKEN}` }
-        });
-        return await response.json();
+        const currentUserId = API.getUserId();
+        return await window.dbService.getMatches(currentUserId);
       } catch (error) {
         console.error('Get my matches error:', error);
         return { error: error.message };
@@ -170,11 +202,10 @@ const API = {
 
     deleteMatch: async (matchId) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/matches/${matchId}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${API.AUTH_TOKEN}` }
-        });
-        return await response.json();
+        const { error } = await window.SupabaseService
+          .delete('matches', { filter: { op: 'eq', field: 'id', value: matchId } });
+        if (error) throw error;
+        return { success: true };
       } catch (error) {
         console.error('Delete match error:', error);
         return { error: error.message };
@@ -186,15 +217,16 @@ const API = {
   messages: {
     sendMessage: async (recipientId, content) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/messages/send`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API.AUTH_TOKEN}`
-          },
-          body: JSON.stringify({ recipient_id: recipientId, content })
-        });
-        return await response.json();
+        const currentUserId = API.getUserId();
+        const message = {
+          senderId: currentUserId,
+          recipientId: recipientId,
+          content: content,
+          read: false,
+          conversationId: [currentUserId, recipientId].sort().join('_'),
+          timestamp: new Date().toISOString()
+        };
+        return await window.dbService.addMessage(message);
       } catch (error) {
         console.error('Send message error:', error);
         return { error: error.message };
@@ -203,10 +235,9 @@ const API = {
 
     getConversation: async (userId) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/messages/conversation/${userId}`, {
-          headers: { 'Authorization': `Bearer ${API.AUTH_TOKEN}` }
-        });
-        return await response.json();
+        const currentUserId = API.getUserId();
+        const conversationId = [currentUserId, userId].sort().join('_');
+        return await window.dbService.getMessages(conversationId);
       } catch (error) {
         console.error('Get conversation error:', error);
         return { error: error.message };
@@ -215,10 +246,24 @@ const API = {
 
     getConversations: async () => {
       try {
-        const response = await fetch(`${API.BASE_URL}/messages/conversations`, {
-          headers: { 'Authorization': `Bearer ${API.AUTH_TOKEN}` }
+        const currentUserId = API.getUserId();
+        const allMessages = await window.SupabaseService
+          .select('messages');
+        if (allMessages.error) throw allMessages.error;
+        // Group messages by conversation
+        const convos = {};
+        (allMessages.data || []).forEach(m => {
+          if (m.senderId === currentUserId || m.recipientId === currentUserId) {
+            const otherId = m.senderId === currentUserId ? m.recipientId : m.senderId;
+            if (!convos[otherId]) convos[otherId] = [];
+            convos[otherId].push(m);
+          }
         });
-        return await response.json();
+        return Object.entries(convos).map(([userId, msgs]) => ({
+          userId: userId,
+          lastMessage: msgs[msgs.length - 1],
+          unreadCount: msgs.filter(m => !m.read && m.recipientId === currentUserId).length
+        }));
       } catch (error) {
         console.error('Get conversations error:', error);
         return { error: error.message };
@@ -227,11 +272,10 @@ const API = {
 
     markAsRead: async (messageId) => {
       try {
-        const response = await fetch(`${API.BASE_URL}/messages/${messageId}/read`, {
-          method: 'PUT',
-          headers: { 'Authorization': `Bearer ${API.AUTH_TOKEN}` }
-        });
-        return await response.json();
+        const { error } = await window.SupabaseService
+          .update('messages', { read: true }, { filter: { op: 'eq', field: 'id', value: messageId } });
+        if (error) throw error;
+        return { success: true };
       } catch (error) {
         console.error('Mark as read error:', error);
         return { error: error.message };
@@ -243,11 +287,9 @@ const API = {
   isAuthenticated: () => {
     return API.AUTH_TOKEN !== null;
   },
-
   getUserId: () => {
     return localStorage.getItem('user_id');
   },
-
   setBaseUrl: (url) => {
     API.BASE_URL = url;
   }
